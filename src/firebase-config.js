@@ -1,12 +1,9 @@
 
 import 'dotenv/config'
-
 import { initializeApp } from "firebase/app";
 //import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from '@firebase/firestore'
 import { getAuth } from "firebase/auth";
-
-
 
 
 
@@ -22,7 +19,6 @@ const firebaseConfig = {
     
 };
 
-console.log(process.env.REACT_APP_APIKEY)
 
 // Initialize Firebase
 
@@ -32,3 +28,5 @@ const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app)
 
 export const auth = getAuth(app);
+
+export default app;
