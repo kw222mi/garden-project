@@ -1,12 +1,12 @@
 
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, doc } from 'firebase/firestore';
 import React from 'react'
 import "../style.css";
 import { db } from "../firebase-config";
 
 const Form = ({inputText, setInputText, todos, setTodos, setStatus}) => {
   
-  const todolistCollectionRef = collection(db, "todolist")
+  const todolistCollectionRef = collection(db, "todos")
 
     const inputTextHandler = (e) => {
         setInputText(e.target.value)
@@ -14,7 +14,7 @@ const Form = ({inputText, setInputText, todos, setTodos, setStatus}) => {
     const submitToDoHandler =async (e) => {
         e.preventDefault()
         await addDoc(todolistCollectionRef, { name: inputText, completed: false})
-        setTodos([...todos, {text:inputText, completed:false, id: Math.random()*1000}])
+        setTodos([...todos, {text:inputText, completed:false }])
         setInputText("")
     }
     const statusHandler = (e) => {

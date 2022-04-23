@@ -1,3 +1,5 @@
+
+import React from "react"
 import { useState } from "react";
 import {
   createUserWithEmailAndPassword,
@@ -5,14 +7,16 @@ import {
   onAuthStateChanged,
   signOut,
 } from "firebase/auth";
+
+
 import { auth } from "../firebase-config";
-import React from "react";
-import "../style.css";
+import { useAuth } from "../contexts/AuthContext"
 
-
-function Register() {
+export default function Register() {
   const [registerEmail, setRegisterEmail] = useState("");
   const [registerPassword, setRegisterPassword] = useState("");
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
   
 
   const [user, setUser] = useState({});
@@ -21,19 +25,10 @@ function Register() {
     setUser(currentUser);
   });
 
-  
-
-  auth.onAuthStateChanged(user => {
-    if(user){
-      console.log('user loged in: ', user)
-    } else {
-      console.log ('user loged out')
-    }
-  })
   const register = async () => {
     try {
       const user = await createUserWithEmailAndPassword(
-        auth,
+       auth,
         registerEmail,
         registerPassword
       );
@@ -43,9 +38,25 @@ function Register() {
     }
   };
 
+  const login = async () => {
+    try {
+      const user = await signInWithEmailAndPassword(
+        auth,
+        loginEmail,
+        loginPassword
+      );
+      console.log(user);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const logout = async () => {
+    await signOut(auth);
+  };
 
   return (
-    <div className="register-input">
+    <div className="App">
       <div>
         <h3> Register User </h3>
         <input
@@ -55,7 +66,6 @@ function Register() {
           }}
         />
         <input
-          type="password"
           placeholder="Password..."
           onChange={(event) => {
             setRegisterPassword(event.target.value);
@@ -64,13 +74,29 @@ function Register() {
 
         <button onClick={register}> Create User</button>
       </div>
-        
+
+      <div>
+        <h3> Login </h3>
+        <input
+          placeholder="Email..."
+          onChange={(event) => {
+            setLoginEmail(event.target.value);
+          }}
+        />
+        <input
+          placeholder="Password..."
+          onChange={(event) => {
+            setLoginPassword(event.target.value);
+          }}
+        />
+
+        <button onClick={login}> Login</button>
+      </div>
+
      
 
+      <button onClick={logout}> Sign Out </button>
     </div>
   );
 }
 
-
-
-export default Register;

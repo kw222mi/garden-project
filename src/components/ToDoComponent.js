@@ -5,6 +5,8 @@
   import "../style.css";
   import Form from "./Form"
   import ToDoList from "./ToDoList"
+  import { collection, addDoc, getDocs, doc } from 'firebase/firestore';
+  import { db } from "../firebase-config";
   
   
   function ToDoComponent() {
@@ -13,11 +15,23 @@
     const [todos, setTodos] = useState ([])
     const[status, setStatus] = useState("all")
     const[filteredTodos, setFilteredTodos] = useState([])
+
+    const todolistCollectionRef = collection(db, "todos")
   
      //use effect
      useEffect(() => {
        filterHandler()
      }, [todos, status])
+
+     useEffect(() => {
+
+      const getTodos = async () => {
+        const data = await getDocs(todolistCollectionRef);
+        setTodos(data.docs.map((doc) => ({ ...doc.data(), text:doc.name, completed:doc.completed, id: doc.id })))
+        console.log (doc.name)
+      }
+     getTodos();
+    }, []);
   
     //Functions
     const filterHandler =() => {
@@ -34,12 +48,14 @@
   
       }
     }
+
+    
     return (
       <div className= "todolist-container">
         <header>
           <h1>Todo list</h1>
         </header>
-        <Form todos={todos} setTodos={setTodos}inputText={inputText} setInputText={setInputText}
+        <Form todos={todos} setTodos={setTodos} inputText={inputText} setInputText={setInputText}
           setStatus={setStatus}
         />
         <ToDoList setTodos={setTodos} todos={todos} filteredTodos={filteredTodos}/>
