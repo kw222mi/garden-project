@@ -13,7 +13,8 @@ const Form = ({inputText, setInputText, todos, setTodos, setStatus}) => {
     }
     const submitToDoHandler =async (e) => {
         e.preventDefault()
-        await addDoc(todolistCollectionRef, { name: inputText, completed: false})
+        await addDoc(todolistCollectionRef, { text: inputText, completed: false})
+
         setTodos([...todos, {text:inputText, completed:false }])
         setInputText("")
     }

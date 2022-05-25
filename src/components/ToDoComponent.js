@@ -27,11 +27,18 @@
 
       const getTodos = async () => {
         const data = await getDocs(todolistCollectionRef);
-        setTodos(data.docs.map((doc) => ({ ...doc.data(), text:doc.name, completed:doc.completed, id: doc.id })))
-        console.log (doc.name)
+        data.forEach((doc)=> {
+          console.log(doc.id, " => ", doc.data());
+        })
+        
+        setTodos(data.docs.map((doc) => ({ ...doc.data(), id:doc.id })))
+       
+        
       }
      getTodos();
     }, []);
+
+  
   
     //Functions
     const filterHandler =() => {
