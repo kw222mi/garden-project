@@ -63,7 +63,7 @@ useEffect(() => {
   
   const [{ isOver }, drop] = useDrop(() => ({
     accept: "image",
-    drop: (item) => addImageToBoardNew(item.id),
+    drop: (item) => addImageToBoard(item.id),
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
     }),
@@ -73,7 +73,7 @@ useEffect(() => {
     const pictureList = PictureList.filter((picture) => id === picture.id);
     setBoard((board) => [...board, pictureList[0]]);
 
-    //updateGarden(id) 
+   // updateGarden(id) 
   };
 
   const addImageToBoardNew = (id) => {
@@ -81,30 +81,30 @@ useEffect(() => {
     const pList = plantList.filter((plant) => id === plant.id)
     setBoard((board) => [...board, pList[0]])
     console.log(board)
+    
   };
-  /*
+  
   const updateGarden = async (id) => {
     const gardenDoc = doc(db, "gardens", id);
     const newBoard = { board: board };
     await updateDoc(gardenDoc, newBoard);
   };
-  */
+  
   return (
     <div>
-        <div className="test">
+      <div className="Pictures">
+        {PictureList.map((picture) => {
+          return <Picture url={picture.url} id={picture.id} />
+          
+        })}
+       
+      </div>
+      <div className="test">
         {plantList.map((plant) => {
           return <Picture url={plant.url} id={plant.id} />
           
         })}
         </div>
-
-      <div className="Pictures">
-        {PictureList.map((picture) => {
-          return <Picture url={picture.url} id={picture.id} />;
-          
-        })}
-       
-      </div>
       <div 
       className="Board" 
       ref={drop} 
@@ -114,8 +114,9 @@ useEffect(() => {
       border: `5px solid ${props.type}`
       }}
       >
+     
         {board.map((picture) => {
-          return <Picture url={picture.url} id={picture.id} />;
+          return <Picture url={picture.url} id={picture.id} />
         })}
       </div>
     </div>

@@ -1,74 +1,110 @@
-import { useState, useEffect } from "react"
-import "../style.css"
-import { db } from "../firebase-config"
+import { useState, useEffect } from 'react'
+import '../style.css'
+import { db } from '../firebase-config'
 import {
   collection,
   getDocs,
   addDoc,
   updateDoc,
   deleteDoc,
-  doc,
-} from "firebase/firestore"
-import React from "react"
+  doc
+} from 'firebase/firestore'
+import React from 'react'
 import GardenSquare from './GardenSquare'
 import DragDrop from '../DragDrop'
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-function Garden() {
-  const [newGardenName, setNewGardenName] = useState("")
+function Garden () {
+  const [newGardenName, setNewGardenName] = useState('No name')
   const [newHeight, setNewHeight] = useState(0)
   const [newWidth, setNewWidth] = useState(0)
   const [garden, setGardens] = useState([])
-  const [newGardenType, setNewGardenType] = useState("")
-  const gardensCollectionRef = collection(db, "gardens")
-  
+  const [newGardenType, setNewGardenType] = useState('Not set')
+  const gardensCollectionRef = collection(db, 'gardens')
+
+  const auth = getAuth()
+  let uid
+onAuthStateChanged (auth, (user) => {
+    if (user) {
+    // User is signed in    
+      uid = user.uid;
+      console.log(uid)
+    // ...
+    } else {
+    // User is signed out
+    // ...
+    }
+  })
+
   const createGarden = async () => {
+    await addDoc(gardensCollectionRef, { name: newGardenName, height: Number(newHeight), width: Number(newWidth), type: newGardenType, userId: uid})
+    getGardens()
     
-    await addDoc(gardensCollectionRef, { name: newGardenName, height: Number(newHeight), width: Number(newWidth), type:newGardenType})
-  };
-    
-  const updateGarden = async (id, height) => {
-    const gardenDoc = doc(db, "gardens", id)
-    const newFields = { height: height + 1 }
-    await updateDoc(gardenDoc, newFields)
+  }
+
+  const getGardens = async () => {
+    const data = await getDocs(gardensCollectionRef)
+    setGardens(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
   }
   
+
+  const updateGarden = async (id, height) => {
+    const gardenDoc = doc(db, 'gardens', id)
+    const newFields = { height: height + 1 }
+    await updateDoc(gardenDoc, newFields)
+    getGardens()
+  }
+
   const deleteGarden = async (id) => {
-    const gardenDoc = doc(db, "gardens", id)
+    const gardenDoc = doc(db, 'gardens', id)
     await deleteDoc(gardenDoc)
+    getGardens()
+  }
+
+  const checkHeight = (event) => {
+    const height = event.target.value
+    if (height > 30 && height < 3000) {
+      setNewHeight(height)
+    } else {
+      console.log('wrong size')
+    }
+  }
+
+  const checkWidth = (event) => {
+    const width = event.target.value
+    if (width > 30 && width < 3000) {
+      setNewWidth(width)
+    } else {
+      console.log('wrong size')
+    }
   }
 
   const getGardenType = (type) => {
     let typeColor
-   if(type === "small"){
-    typeColor = "yellow"
-    console.log("yellow")
-   } else if (type === "medium") {
-    typeColor = "orange"
-    console.log("orange")
-   }else if (type === "heavy") {
-    typeColor = "red"
-    console.log("red")
-   }else if(type === "giving") {
-    typeColor= "green"
-    console.log("green")
-   }else {
-    typeColor= "black"
-    console.log("black")
-   }
-   return typeColor
+    if (type === 'small') {
+      typeColor = 'yellow'
+      console.log('yellow')
+    } else if (type === 'medium') {
+      typeColor = 'orange'
+      console.log('orange')
+    } else if (type === 'heavy') {
+      typeColor = 'red'
+      console.log('red')
+    } else if (type === 'giving') {
+      typeColor = 'green'
+      console.log('green')
+    } else {
+      typeColor = 'black'
+      console.log('black')
+    }
+    return typeColor
   }
-  
+
   useEffect(() => {
-    const getGardens = async () => {
-      const data = await getDocs(gardensCollectionRef)
-
-      setGardens(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    
-    };
-    getGardens();
-  }, []);
-
   
+    getGardens()
+  }, [])
+
   return (
     <div className="Garden">
       <input
@@ -81,67 +117,64 @@ function Garden() {
         type="number"
         placeholder="Width in cm..."
         onChange={(event) => {
-          setNewWidth(event.target.value);
+          checkWidth(event)
         }}
       />
       <input
         type="number"
         placeholder="Height in cm..."
         onChange={(event) => {
-          setNewHeight(event.target.value);
+          checkHeight(event)
         }}
       />
-     
 
-       <label for="gardenType">Choose type of plants:</label>
-      <select id="gardenType" name="gardenType">
+       <label for="gardenType"></label>
+      <select id="gardenType" name="gardenType" onChange={(event) => {
+        setNewGardenType(event.target.value)
+      }}>
+      <option value="nothing" selected="selected">Choose type of plants:</option>
       <option value="giving">Giving</option>
       <option value="small">Small</option>
       <option value="medium">Medium</option>
       <option value="heavy">Heavy</option>
-      onSelect={(event) => {
-          setNewGardenType(event.target.value)
-        }}
-      </select> 
-            
+      </select>
 
       <button onClick={createGarden}> Create Garden</button>
       {garden.map((garden) => {
         return (
           <div>
-            {" "}
+            {' '}
             <h1>Name: {garden.name}</h1>
             <h1>Height: {garden.height}</h1>
             <h1>Width: {garden.width}</h1>
             <h1>Type: {garden.type}</h1>
-            
-              <DragDrop 
+
+              <DragDrop
                 height={Math.floor(garden.height/20)*50}
                 width={Math.floor(garden.width/20)*50}
                 type={getGardenType(garden.type)}
               />
-            
             <button
               onClick={() => {
                 updateGarden(garden.id, garden.height);
               }}
             >
-              {" "}
+              {' '}
               Increase Height
             </button>
             <button
               onClick={() => {
-                deleteGarden(garden.id);
+                deleteGarden(garden.id)
               }}
             >
-              {" "}
+              {' '}
               Delete Garden
             </button>
           </div>
-        );
+        )
       })}
     </div>
-  );
+  )
 }
 
 export default Garden
