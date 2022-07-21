@@ -1,22 +1,29 @@
-import React, { useState } from "react"
-import { Card, Button, Alert } from "react-bootstrap"
-import { useAuth } from "../contexts/AuthContext"
-import { Link, useNavigate } from "react-router-dom"
+import React, { useState } from 'react'
+import { Card, Button, Alert } from 'react-bootstrap'
+import { useAuth } from '../contexts/AuthContext'
+import { Link, useNavigate } from 'react-router-dom'
 
-export default function Dashboard() {
-  const [error, setError] = useState("")
+/**
+ * Show the user navigation and information about login.
+ *
+ * @returns {HTMLElement}-the user interface of the dashboard.
+ */
+export default function Dashboard () {
+  const [error, setError] = useState('')
   const { currentUser, logout } = useAuth()
   const navigate = useNavigate()
 
-  async function handleLogout() {
-    setError("")
+  /**
+   *  Function to handle the users logout.
+   */
+  async function handleLogout () {
+    setError('')
 
     try {
       await logout()
       navigate('login')
-      
     } catch {
-      setError("Failed to log out")
+      setError('Failed to log out')
     }
   }
 
@@ -27,7 +34,7 @@ export default function Dashboard() {
           <h2 className="text-center mb-4">Profile</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           <strong>Email:</strong> {currentUser.email}
-         
+
         </Card.Body>
       </Card>
       <div className="w-100 text-center mt-2">

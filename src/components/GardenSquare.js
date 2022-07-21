@@ -7,9 +7,16 @@ import React from 'react'
             </div>
 */
 
-
-export default function () {
-    return (
-        <div class="square"></div>
-    )
+/**
+ *
+ * @param props
+ */
+export default function GardenSquare (props) {
+  return (
+        <div
+        class="square"
+        id={props.plantId}
+        src={props.url}
+        ></div>
+  )
 }

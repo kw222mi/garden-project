@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import '../style.css'
 import { db } from '../firebase-config'
 import {
@@ -9,25 +9,31 @@ import {
   deleteDoc,
   doc
 } from 'firebase/firestore'
-import React from 'react'
-import GardenSquare from './GardenSquare'
-import DragDrop from '../DragDrop'
-import { getAuth, onAuthStateChanged } from "firebase/auth";
 
+import DragDrop from '../DragDrop'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import Alert from 'react-bootstrap/Alert'
+
+/**
+ *
+ */
 function Garden () {
   const [newGardenName, setNewGardenName] = useState('No name')
   const [newHeight, setNewHeight] = useState(0)
   const [newWidth, setNewWidth] = useState(0)
   const [garden, setGardens] = useState([])
   const [newGardenType, setNewGardenType] = useState('Not set')
+  const [error, setError] = useState('')
+
   const gardensCollectionRef = collection(db, 'gardens')
+  const [loading, setLoading] = useState(false)
 
   const auth = getAuth()
   let uid
-onAuthStateChanged (auth, (user) => {
+  onAuthStateChanged(auth, (user) => {
     if (user) {
-    // User is signed in    
-      uid = user.uid;
+    // User is signed in
+      uid = user.uid
       console.log(uid)
     // ...
     } else {
@@ -36,18 +42,37 @@ onAuthStateChanged (auth, (user) => {
     }
   })
 
+  /**
+   *
+   */
   const createGarden = async () => {
-    await addDoc(gardensCollectionRef, { name: newGardenName, height: Number(newHeight), width: Number(newWidth), type: newGardenType, userId: uid})
-    getGardens()
-    
+    if ((newWidth > 30 && newWidth < 3000) && (newHeight > 30 && newHeight < 3000)) {
+      // Disables the button
+      setLoading(true)
+      // Store the garden in the db
+      await addDoc(gardensCollectionRef, { name: newGardenName, height: Number(newHeight), width: Number(newWidth), type: newGardenType, userId: uid })
+      getGardens()
+      // To clear the form
+      window.location.reload()
+    } else {
+      setError('Wrong size could not create garden')
+    }
+    setLoading(false)
   }
 
+  /**
+   *
+   */
   const getGardens = async () => {
     const data = await getDocs(gardensCollectionRef)
     setGardens(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
   }
-  
 
+  /**
+   *
+   * @param id
+   * @param height
+   */
   const updateGarden = async (id, height) => {
     const gardenDoc = doc(db, 'gardens', id)
     const newFields = { height: height + 1 }
@@ -55,30 +80,50 @@ onAuthStateChanged (auth, (user) => {
     getGardens()
   }
 
+  /**
+   *
+   * @param id
+   */
   const deleteGarden = async (id) => {
     const gardenDoc = doc(db, 'gardens', id)
     await deleteDoc(gardenDoc)
     getGardens()
   }
 
+  /**
+   *
+   * @param event
+   */
   const checkHeight = (event) => {
+    setError('')
     const height = event.target.value
     if (height > 30 && height < 3000) {
       setNewHeight(height)
     } else {
       console.log('wrong size')
+      setError('Size should be 30 - 3000 cm')
     }
   }
 
+  /**
+   *
+   * @param event
+   */
   const checkWidth = (event) => {
+    setError('')
     const width = event.target.value
     if (width > 30 && width < 3000) {
       setNewWidth(width)
     } else {
       console.log('wrong size')
+      setError('Size should be 30 - 3000 cm')
     }
   }
 
+  /**
+   *
+   * @param type
+   */
   const getGardenType = (type) => {
     let typeColor
     if (type === 'small') {
@@ -101,28 +146,29 @@ onAuthStateChanged (auth, (user) => {
   }
 
   useEffect(() => {
-  
     getGardens()
   }, [])
 
   return (
     <div className="Garden">
+    <h2>My Gardens</h2>
+    {error && <Alert variant="danger">{error}</Alert>}
       <input
-        placeholder="Name..."
+        placeholder='Name...'
         onChange={(event) => {
           setNewGardenName(event.target.value)
         }}
       />
       <input
         type="number"
-        placeholder="Width in cm..."
+        placeholder='Width in cm'
         onChange={(event) => {
           checkWidth(event)
         }}
       />
       <input
         type="number"
-        placeholder="Height in cm..."
+        placeholder='Height in cm'
         onChange={(event) => {
           checkHeight(event)
         }}
@@ -139,7 +185,7 @@ onAuthStateChanged (auth, (user) => {
       <option value="heavy">Heavy</option>
       </select>
 
-      <button onClick={createGarden}> Create Garden</button>
+      <button onClick={createGarden} disabled={loading}> Create Garden</button>
       {garden.map((garden) => {
         return (
           <div>
@@ -150,13 +196,14 @@ onAuthStateChanged (auth, (user) => {
             <h1>Type: {garden.type}</h1>
 
               <DragDrop
-                height={Math.floor(garden.height/20)*50}
-                width={Math.floor(garden.width/20)*50}
+                height={Math.floor(garden.height / 20) * 50}
+                width={Math.floor(garden.width / 20) * 50}
                 type={getGardenType(garden.type)}
+                gardenId={garden.id}
               />
             <button
               onClick={() => {
-                updateGarden(garden.id, garden.height);
+                updateGarden(garden.id, garden.height)
               }}
             >
               {' '}

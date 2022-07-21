@@ -1,27 +1,48 @@
 
-import { collection, addDoc, getDocs, doc } from 'firebase/firestore';
+import { collection, addDoc } from 'firebase/firestore'
 import React from 'react'
-import "../style.css";
-import { db } from "../firebase-config";
+import '../style.css'
+import { db } from '../firebase-config'
 
-const Form = ({inputText, setInputText, todos, setTodos, setStatus}) => {
-  
-  const todolistCollectionRef = collection(db, "todos")
+/**
+ *
+ * @param {*} param0
+ * @returns
+ */
+const Form = ({ inputText, setInputText, todos, setTodos, setStatus }) => {
+  const todolistCollectionRef = collection(db, 'todos')
 
-    const inputTextHandler = (e) => {
-        setInputText(e.target.value)
-    }
-    const submitToDoHandler =async (e) => {
-        e.preventDefault()
-        await addDoc(todolistCollectionRef, { text: inputText, completed: false})
+  /**
+   * Function to handle the text input.
+   *
+   * @param {ChangeEvent} e-text change event.
+   * @param e
+   */
+  const inputTextHandler = (e) => {
+    setInputText(e.target.value)
+  }
 
-        setTodos([...todos, {text:inputText, completed:false }])
-        setInputText("")
-    }
-    const statusHandler = (e) => {
-        setStatus(e.target.value)
-    }
-    return (
+  /**
+   * Handle the submit
+   *
+   * @param {ClickEvent} e
+   */
+  const submitToDoHandler = async (e) => {
+    e.preventDefault()
+    await addDoc(todolistCollectionRef, { text: inputText, completed: false })
+
+    setTodos([...todos, { text: inputText, completed: false }])
+    setInputText('')
+  }
+
+  /**
+   *
+   * @param {ChangeEvent} e
+   */
+  const statusHandler = (e) => {
+    setStatus(e.target.value)
+  }
+  return (
         <form>
         <input value={inputText} onChange={inputTextHandler} type="text" className="todo-input" />
         <button onClick = {submitToDoHandler} className="todo-button" type="submit">
@@ -35,7 +56,7 @@ const Form = ({inputText, setInputText, todos, setTodos, setStatus}) => {
           </select>
         </div>
       </form>
-    )
+  )
 }
 
-export default Form;
+export default Form

@@ -14,7 +14,7 @@ function Picture({ id, url }) {
     className="picture--ikon"
       ref={drag}
       src={url}
-      
+      alt='ikon'
       style={{ opacity: isDragging ? "0.5" : "1" }}
     />
   );

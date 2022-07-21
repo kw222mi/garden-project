@@ -1,35 +1,45 @@
-import React, { useRef, useState } from "react"
-import { Form, Button, Card, Alert } from "react-bootstrap"
-import { useAuth } from "../contexts/AuthContext"
-import { Link, useNavigate } from "react-router-dom"
+import React, { useRef, useState } from 'react'
+import { Form, Button, Card, Alert } from 'react-bootstrap'
+// import { useAuth } from '../contexts/AuthContext'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   createUserWithEmailAndPassword
-} from "firebase/auth";
-import { auth } from "../firebase-config";
+} from 'firebase/auth'
+import { auth } from '../firebase-config'
 
-export default function Signup() {
+/**
+ * Component to handle the signup of a user.
+ *
+ * @returns {HTMLElement} - returns the form to sign up.
+ */
+export default function Signup () {
   const emailRef = useRef()
   const passwordRef = useRef()
   const passwordConfirmRef = useRef()
-  const { signup } = useAuth()
-  const [error, setError] = useState("")
+  // const { signup } = useAuth()
+  const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
-  async function handleSubmit(e) {
+  /**
+   *Function to handle the submit.
+   *
+   * @param {event} e - the submit event
+   */
+  async function handleSubmit (e) {
     e.preventDefault()
 
     if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-      return setError("Passwords do not match")
+      return setError('Passwords do not match')
     }
 
     try {
-      setError("")
+      setError('')
       setLoading(true)
       await createUserWithEmailAndPassword(auth, emailRef.current.value, passwordRef.current.value)
       navigate('/')
     } catch {
-      setError("Failed to create an account")
+      setError('Failed to create an account')
     }
 
     setLoading(false)

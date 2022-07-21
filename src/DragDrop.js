@@ -10,15 +10,10 @@ import { db } from "./firebase-config";
 import {
   collection,
   getDocs,
-  addDoc,
   updateDoc,
-  deleteDoc,
-  doc,
-  onSnapshot,
-} from "firebase/firestore";
-
-
-
+  doc
+} from 'firebase/firestore'
+import GardenSquare from './components/GardenSquare'
 
 const PictureList = [
   {
@@ -43,10 +38,35 @@ const PictureList = [
 
 function DragDrop(props) {
   const [board, setBoard] = useState([{
-    id:4,
-    url:carrot
 
   }])
+  const [gardenquare, setGardenquare] = useState([
+    {
+      plantId:'04BSoDOP2HesDun7YZj1',
+      url:carrot
+    },
+    {
+      plantId:'04BSoDOP2HesDun7YZj1',
+      url:carrot
+    },
+    {
+      plantId:'04BSoDOP2HesDun7YZj1',
+      url:carrot
+    },
+    {
+      plantId:'04BSoDOP2HesDun7YZj1',
+      url:carrot
+    },
+    {
+      plantId:'04BSoDOP2HesDun7YZj1',
+      url:carrot
+    },
+    {
+      plantId:'04BSoDOP2HesDun7YZj1',
+      url:carrot
+    }
+
+   ])
   const [plantList, setPlantList] = useState([])
   const plantsCollectionRef = collection(db, "plants")
 
@@ -58,7 +78,13 @@ useEffect(() => {
     
   };
 
-  getPlants();
+  getPlants()
+  let numberOfSquares = (props.height/50)*(props.width/50)
+  //setGardenquare(numberOfSquares)
+  console.log("Sqares " + numberOfSquares)
+  console.log("garden id " + props.gardenId)
+  console.log("array" + gardenquare)
+  // setGardenquare(gardenquare => [...garden, newElement]);
 }, []);
   
   const [{ isOver }, drop] = useDrop(() => ({
@@ -105,6 +131,16 @@ useEffect(() => {
           
         })}
         </div>
+
+        <label for="plantsInGarden"></label>
+      <select id="plantType" name="plantType" onChange={(event) => {
+        //setNewGardenType(event.target.value)
+      }}>
+      <option value="nothing" selected="selected">Choose plants to grow:</option>
+      {plantList.map((plant) => {
+          return <option name={plant.name} id={plant.id} >{plant.name}</option>
+        })}
+      </select>
       <div 
       className="Board" 
       ref={drop} 
@@ -114,7 +150,11 @@ useEffect(() => {
       border: `5px solid ${props.type}`
       }}
       >
-     
+      
+      {gardenquare.map((gardenSquare) => {
+          return <GardenSquare id={gardenquare.plantId} url={gardenquare.url}></GardenSquare>
+        })}
+
         {board.map((picture) => {
           return <Picture url={picture.url} id={picture.id} />
         })}

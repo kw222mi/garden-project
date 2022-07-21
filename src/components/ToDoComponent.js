@@ -1,76 +1,74 @@
 
+import React, { useState, useEffect } from 'react'
+import '../style.css'
+import Form from './Form'
+import ToDoList from './ToDoList'
+import { collection, getDocs } from 'firebase/firestore'
+import { db } from '../firebase-config'
 
- 
-  import React, {useState, useEffect} from "react";
-  import "../style.css";
-  import Form from "./Form"
-  import ToDoList from "./ToDoList"
-  import { collection, addDoc, getDocs, doc } from 'firebase/firestore';
-  import { db } from "../firebase-config";
-  
-  
-  function ToDoComponent() {
-    // use stat
-    const [inputText, setInputText] = useState("")
-    const [todos, setTodos] = useState ([])
-    const[status, setStatus] = useState("all")
-    const[filteredTodos, setFilteredTodos] = useState([])
+/**
+ *Component to hold the todolist and the form to add todos.
+ *
+ * @returns {HTMLElement} - render the todo and form components.
+ */
+function ToDoComponent () {
+  // use stat
+  const [inputText, setInputText] = useState('')
+  const [todos, setTodos] = useState([])
+  const [status, setStatus] = useState('all')
+  const [filteredTodos, setFilteredTodos] = useState([])
 
-    const todolistCollectionRef = collection(db, "todos")
-  
-     //use effect
-     useEffect(() => {
-       filterHandler()
-     }, [todos, status])
+  const todolistCollectionRef = collection(db, 'todos')
 
-     useEffect(() => {
+  // use effect
+  useEffect(() => {
+    filterHandler()
+  }, [todos, status])
 
-      const getTodos = async () => {
-        const data = await getDocs(todolistCollectionRef);
-        data.forEach((doc)=> {
-          console.log(doc.id, " => ", doc.data());
-        })
-        
-        setTodos(data.docs.map((doc) => ({ ...doc.data(), id:doc.id })))
-       
-        
-      }
-     getTodos();
-    }, []);
+  useEffect(() => {
+    /**
+     *Get the list of todos.
+     */
+    const getTodos = async () => {
+      const data = await getDocs(todolistCollectionRef)
+      data.forEach((doc) => {
+        console.log(doc.id, ' => ', doc.data())
+      })
 
-  
-  
-    //Functions
-    const filterHandler =() => {
-      switch(status){
-        case 'completed':
-          setFilteredTodos(todos.filter(todo => todo.completed === true))
-          break
-          case 'uncompleted':
-            setFilteredTodos(todos.filter(todo => todo.completed === false))
-            break
-            default:
-              setFilteredTodos(todos)
-              break
-  
-      }
+      setTodos(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
     }
+    getTodos()
+  }, [])
 
-    
-    return (
-      <div className= "todolist-container">
-        <header>
-          <h1>Todo list</h1>
-        </header>
-        <Form todos={todos} setTodos={setTodos} inputText={inputText} setInputText={setInputText}
-          setStatus={setStatus}
-        />
-        <ToDoList setTodos={setTodos} todos={todos} filteredTodos={filteredTodos}/>
-      </div>
-    )
-   
+  // Functions
+  /**
+   *Function to filter the todos.
+   */
+  const filterHandler = () => {
+    switch (status) {
+      case 'completed':
+        setFilteredTodos(todos.filter(todo => todo.completed === true))
+        break
+      case 'uncompleted':
+        setFilteredTodos(todos.filter(todo => todo.completed === false))
+        break
+      default:
+        setFilteredTodos(todos)
+        break
+    }
   }
-  
-  
-  
-  export default ToDoComponent;
+
+  return (
+    <div className="todolist-container">
+      <header>
+        <h1>Todo list</h1>
+      </header>
+      <Form todos={todos} setTodos={setTodos} inputText={inputText} setInputText={setInputText}
+        setStatus={setStatus}
+      />
+      <ToDoList setTodos={setTodos} todos={todos} filteredTodos={filteredTodos} />
+    </div>
+  )
+}
+
+export default ToDoComponent

@@ -1,31 +1,37 @@
-import React, { useRef, useState } from "react"
-import { Form, Button, Card, Alert } from "react-bootstrap"
-import { useAuth } from "../contexts/AuthContext"
-import { Link, useNavigate } from "react-router-dom"
+import React, { useRef, useState } from 'react'
+import { Form, Button, Card, Alert } from 'react-bootstrap'
+// import { useAuth } from '../contexts/AuthContext'
+import { Link, useNavigate } from 'react-router-dom'
 import {
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-import { auth } from "../firebase-config";
+  signInWithEmailAndPassword
+} from 'firebase/auth'
+import { auth } from '../firebase-config'
 
-
-export default function Login() {
+/**
+ *
+ */
+export default function Login () {
   const emailRef = useRef()
   const passwordRef = useRef()
-  const { login } = useAuth()
-  const [error, setError] = useState("")
+  // const { login } = useAuth()
+  const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
-  async function handleSubmit(e) {
+  /**
+   *
+   * @param e
+   */
+  async function handleSubmit (e) {
     e.preventDefault()
 
     try {
-      setError("")
+      setError('')
       setLoading(true)
       await signInWithEmailAndPassword(auth, emailRef.current.value, passwordRef.current.value)
-      navigate("/")
+      navigate('/')
     } catch {
-      setError("Failed to log in")
+      setError('Failed to log in')
     }
 
     setLoading(false)
