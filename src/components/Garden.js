@@ -10,7 +10,7 @@ import {
   doc
 } from 'firebase/firestore'
 
-import DragDrop from '../DragDrop'
+import DragDrop from './DragDrop'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import Alert from 'react-bootstrap/Alert'
 
@@ -91,6 +91,7 @@ function Garden () {
   }
 
   /**
+   * check the height and help the user enter a valid size.
    *
    * @param event
    */
@@ -100,13 +101,13 @@ function Garden () {
     if (height > 30 && height < 3000) {
       setNewHeight(height)
     } else {
-      console.log('wrong size')
+      setNewHeight(height)
       setError('Size should be 30 - 3000 cm')
     }
   }
 
   /**
-   *
+   * check the width and help the user enter a valid size.
    * @param event
    */
   const checkWidth = (event) => {
@@ -115,7 +116,7 @@ function Garden () {
     if (width > 30 && width < 3000) {
       setNewWidth(width)
     } else {
-      console.log('wrong size')
+      setNewWidth(width)
       setError('Size should be 30 - 3000 cm')
     }
   }

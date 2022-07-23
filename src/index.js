@@ -8,7 +8,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 // import Register from "./components/Register";
 // import ToDoComponent from "./components/ToDoComponent";
 // import DragDrop from "./DragDrop"
-import { createRoot } from "react-dom/client";
+import { createRoot } from 'react-dom/client'
 import {DndProvider} from 'react-dnd'
 import {HTML5Backend} from 'react-dnd-html5-backend'
 
@@ -17,14 +17,14 @@ const container = document.getElementById("root");
 const root = createRoot(container);
  
 root.render(
-  <React.StrictMode>
+ 
   <DndProvider backend={HTML5Backend}>
   <Router>
     <App />
     </Router>
     </DndProvider>
     
-  </React.StrictMode>
+ 
 );
 
 /*

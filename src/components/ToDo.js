@@ -11,17 +11,19 @@ import {
 import { db } from '../firebase-config'
 
 /**
+ * Component to hold a single to do element.
  *
- * @param {*} param0
- * @returns
+ * @param {*} param - props to set the todo element.
+ * @returns {HTMLElement} - the component to hold a single todo.
  */
 function ToDo ({ text, todo, todos, setTodos }) {
   const todolistCollectionRef = collection(db, 'todos')
   // Events
 
   /**
+   * Function to delete a todo.
    *
-   * @param {*} id
+   * @param {*} id - the id of the todo element
    */
   const deleteHandler = async (id) => {
     console.log(id)
@@ -30,22 +32,12 @@ function ToDo ({ text, todo, todos, setTodos }) {
     await deleteDoc(todoDoc)
     setTodos(todos.filter((el) => el.id !== todo.id))
   }
-  /*
-  const deleteHandler = () => {
-    setTodos(todos.filter((el) => el.id !== todo.id))
-  }
-  */
 
   /**
+   * Function to handle the complete of a task.
    *
-   * @param {*} id
-   * @param {*} completed
-   */
-
-  /**
-   *
-   * @param id
-   * @param completed
+   * @param {*} id - the id of the todo from db.
+   * @param {boolean} completed - if the todo is completed or not.
    */
   const completeHandler = async (id, completed) => {
     const todoDoc = doc(db, 'todos', id)
@@ -60,18 +52,6 @@ function ToDo ({ text, todo, todos, setTodos }) {
       return item
     }))
   }
-  /*
-  const completeHandler = () => {
-    setTodos(todos.map(item => {
-      if(item.id === todo.id){
-        return{
-          ...item, completed: !item.completed
-        }
-      }
-      return item
-    }))
-  }
-  */
 
   return (
             <div className="todo">
