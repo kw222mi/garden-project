@@ -18,6 +18,8 @@ import { db } from '../firebase-config'
  */
 function ToDo ({ text, todo, todos, setTodos }) {
   const todolistCollectionRef = collection(db, 'todos')
+
+  
   // Events
 
   /**

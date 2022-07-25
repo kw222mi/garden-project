@@ -3,8 +3,13 @@ import React, { useState, useEffect } from 'react'
 import '../style.css'
 import Form from './Form'
 import ToDoList from './ToDoList'
-import { collection, getDocs } from 'firebase/firestore'
+import { collection,  
+  where,
+  query,
+  getDocs } from 'firebase/firestore'
 import { db } from '../firebase-config'
+import { Link, useNavigate } from 'react-router-dom'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
 /**
  *Component to hold the todolist and the form to add todos.
@@ -20,6 +25,18 @@ function ToDoComponent () {
 
   const todolistCollectionRef = collection(db, 'todos')
 
+  const auth = getAuth()
+  let uid
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+    // User is signed in
+      uid = user.uid
+      console.log(uid)
+    } else {
+     console.log('User is signed out')
+    }
+  })
+
   // use effect
   useEffect(() => {
     filterHandler()
@@ -30,12 +47,17 @@ function ToDoComponent () {
      *Get the list of todos.
      */
     const getTodos = async () => {
-      const data = await getDocs(todolistCollectionRef)
-      data.forEach((doc) => {
-        console.log(doc.id, ' => ', doc.data())
-      })
+           
+        const q = query(collection(db, "todos"), where("userId", "==", uid))
+        const data = await getDocs(q);
+          setTodos(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
 
-      setTodos(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+      //const data = await getDocs(todolistCollectionRef)
+      //data.forEach((doc) => {
+        //console.log(doc.id, ' => ', doc.data())
+      //})
+
+      //setTodos(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
     }
     getTodos()
   }, [])
@@ -60,6 +82,11 @@ function ToDoComponent () {
 
   return (
     <div className="todolist-container">
+      <div>
+      <Link to="/garden" className="btn btn-primary w-100 mt-3">
+            My garden
+          </Link>
+      </div>
       <header>
         <h1>Todo list</h1>
       </header>

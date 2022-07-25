@@ -3,6 +3,8 @@ import '../style.css'
 import { db } from '../firebase-config'
 import {
   collection,
+  where,
+  query,
   getDocs,
   addDoc,
   updateDoc,
@@ -13,6 +15,7 @@ import {
 import DragDrop from './DragDrop'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import Alert from 'react-bootstrap/Alert'
+import { Link } from 'react-router-dom'
 
 /**
  *
@@ -35,13 +38,20 @@ function Garden () {
     // User is signed in
       uid = user.uid
       console.log(uid)
-    // ...
     } else {
-    // User is signed out
-    // ...
+     console.log('User is signed out')
     }
   })
 
+  const testIt = async () => {
+  const q = query(collection(db, "gardens"), where("userId", "==", uid))
+  const data = await getDocs(q);
+  //querySnapshot.forEach((doc) => {
+  // doc.data() is never undefined for query doc snapshots
+  //console.log('hello' + doc.id, " => ", doc.data());
+    //})
+    setGardens(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+  }
   /**
    *
    */
@@ -64,8 +74,9 @@ function Garden () {
    *
    */
   const getGardens = async () => {
-    const data = await getDocs(gardensCollectionRef)
-    setGardens(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+   // const data = await getDocs(gardensCollectionRef)
+   // setGardens(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+    testIt()
   }
 
   /**
@@ -152,6 +163,11 @@ function Garden () {
 
   return (
     <div className="Garden">
+    <div>
+      <Link to="/todo" className="btn btn-primary w-100 mt-3">
+            TodoList
+          </Link>
+      </div>
     <h2>My Gardens</h2>
     {error && <Alert variant="danger">{error}</Alert>}
       <input

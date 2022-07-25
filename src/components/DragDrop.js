@@ -114,9 +114,9 @@ function DragDrop(props) {
 
    ])
   const [plantList, setPlantList] = useState([])
-  const [selected, setSelected] = useState('')
+  const [selected, setSelected] = useState(false)
   const plantsCollectionRef = collection(db, "plants")
-  
+
 
 useEffect(() => {
   const getPlants = async () => {
@@ -126,7 +126,7 @@ useEffect(() => {
   };
 
   getPlants()
-  let numberOfSquares = (props.height/50)*(props.width/50)/2
+  let numberOfSquares = (props.height/50)*(props.width/50)
   let gardenId = props.gardenId
   console.log("Sqares " + numberOfSquares)
   console.log("garden id " + props.gardenId)
@@ -181,14 +181,21 @@ useEffect(() => {
 
         <label for="plantsInGarden"></label>
       <select id="plantType" name="plantType" onChange={(event) => {
-        console.log(event.target.value)
-        setSelected(event.target.value)
+        console.log('selected ' + selected)
+        setSelected(null)
+        console.log('selected ' + selected)
+        if (event.target.value === 'nothing selected'){
+          console.log('nothing selected')
+        } else {
+
         setGardenSquare(gardenSquare => [...gardenSquare, {name: event.target.value}])
-        setSelected(event.target.value)
+        }
+        setSelected(true)
+        console.log('selected ' + selected)
       }}>
-      <option value="nothing selected" selected={selected}>Choose plants to grow:</option>
+      <option value='nothing selected' selected={selected} className='select_plants'>Choose plants to grow:</option>
       {plantList.map((plant) => {
-          return <option name={plant.name} id={plant.id} >{plant.name}</option>
+          return <option name={plant.name} value={plant.name} >{plant.name}</option>
         })}
       </select>
       <div 
@@ -202,7 +209,7 @@ useEffect(() => {
       >
       
       {gardenSquare.map((gardenSquare) => {
-          return <GardenSquare name={gardenSquare.name} plantid={gardenSquare.plantid}/>
+          return <GardenSquare name={gardenSquare.name} plantId={gardenSquare.plantId}/>
         })}
         
       </div>

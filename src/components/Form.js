@@ -1,8 +1,13 @@
 
-import { collection, addDoc } from 'firebase/firestore'
+import { collection, 
+  addDoc, 
+  where,
+  query,
+  getDocs } from 'firebase/firestore'
 import React from 'react'
 import '../style.css'
 import { db } from '../firebase-config'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
 /**
  *
@@ -11,6 +16,19 @@ import { db } from '../firebase-config'
  */
 const Form = ({ inputText, setInputText, todos, setTodos, setStatus }) => {
   const todolistCollectionRef = collection(db, 'todos')
+
+  //Get the user id
+  const auth = getAuth()
+  let uid
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+    // User is signed in
+      uid = user.uid
+      console.log(uid)
+    } else {
+     console.log('User is signed out')
+    }
+  })
 
   /**
    * Function to handle the text input.
@@ -29,11 +47,17 @@ const Form = ({ inputText, setInputText, todos, setTodos, setStatus }) => {
    */
   const submitToDoHandler = async (e) => {
     e.preventDefault()
-    await addDoc(todolistCollectionRef, { text: inputText, completed: false })
-
-    setTodos([...todos, { text: inputText, completed: false }])
+    await addDoc(todolistCollectionRef, { text: inputText, completed: false, userId: uid})
+    updateTodoList()
+    //setTodos([...todos, { text: inputText, completed: false, userId: uid }])
     setInputText('')
   }
+
+  const  updateTodoList = async () => {
+    const q = query(collection(db, "todos"), where("userId", "==", uid))
+    const data = await getDocs(q);
+      setTodos(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+    }
 
   /**
    *

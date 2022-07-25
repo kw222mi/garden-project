@@ -1,4 +1,5 @@
 import React from 'react'
+/*
 import peas from '../pictures/peas_ikon.jpg'
 import onion from '../pictures/onion_ikon.jpg'
 import carrot from '../pictures/carrot_ikon.jpg'
@@ -14,7 +15,7 @@ import parsley from '../pictures/parsley_ikon.jpg'
 import potato from '../pictures/potato_ikon.jpg'
 import tomato from '../pictures/tomato_ikon.jpg'
 import cucumber from '../pictures/cucumber_ikon.jpg'
-
+*/
 
 
 /**
