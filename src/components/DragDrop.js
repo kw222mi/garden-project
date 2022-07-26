@@ -24,9 +24,12 @@ import {
   collection,
   getDocs,
   updateDoc,
+  where,
+  query,
   doc
 } from 'firebase/firestore'
 import GardenSquare from './GardenSquare'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
 const PictureList = [
   {
@@ -105,17 +108,30 @@ const PictureList = [
 ];
 
 function DragDrop(props) {
-  const [board, setBoard] = useState([{
-
-  }])
-  const [gardenSquare, setGardenSquare] = useState([
-    
-   
-
-   ])
+  const [board, setBoard] = useState([{ }])
+  const [plantsInGarden, setPlantsInGarden] = useState(props.plantsInGarden)
   const [plantList, setPlantList] = useState([])
   const [selected, setSelected] = useState(false)
+  const gardensCollectionRef = collection(db, 'gardens')
   const plantsCollectionRef = collection(db, "plants")
+
+  let gardenId = props.gardenId
+  const auth = getAuth()
+  let uid
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+    // User is signed in
+      uid = user.uid
+      console.log(uid)
+    } else {
+     console.log('User is signed out')
+    }
+  })
+
+useEffect(() => {
+
+  savePlantsInGarden(gardenId, plantsInGarden)
+}, [plantsInGarden])
 
 
 useEffect(() => {
@@ -127,17 +143,51 @@ useEffect(() => {
 
   getPlants()
   let numberOfSquares = (props.height/50)*(props.width/50)
-  let gardenId = props.gardenId
+  
   console.log("Sqares " + numberOfSquares)
   console.log("garden id " + props.gardenId)
-  console.log("array" + gardenSquare)
+  console.log("array" + plantsInGarden)
   /*
   for (let i=0; i< numberOfSquares; i++){
-    setGardenSquare(gardenSquare => [...gardenSquare, {name: tomato, id: gardenId}])
+    setPlantsIngarden(gardenSquare => [...gardenSquare, {name: tomato, id: gardenId}])
     console.log("array" + gardenSquare.name)
   }
   */
 }, [])
+
+useEffect(() => {
+  const getPlantsinGarden = async () => {
+    const q = query(collection(db, "gardens"), where("userId", "==", uid))
+  const data = await getDocs(q);
+  //let test = data.getValue(plantsInGarden)
+  console.log('data.docs ' + data.docs.data)
+    //const data = await getDocs(gardensCollectionRef);
+    //setPlantsInGarden(data.docs.map((doc) => ({ ...doc.data(), plantsInGarden: plantsInGarden }))); 
+
+  }
+
+ 
+
+  getPlantsinGarden()
+  let numberOfSquares = (props.height/50)*(props.width/50)
+  
+  
+  console.log("get array" + plantsInGarden)
+  /*
+  for (let i=0; i< numberOfSquares; i++){
+    setPlantsIngarden(gardenSquare => [...gardenSquare, {name: tomato, id: gardenId}])
+    console.log("array" + gardenSquare.name)
+  }
+  */
+}, [])
+
+const savePlantsInGarden = async (id, plantsInGarden) => {
+  
+  const gardenDoc = doc(db, 'gardens', id)
+  const newField = { plantsInGarden}
+  await updateDoc(gardenDoc, newField)
+}
+
   
   const [{ isOver }, drop] = useDrop(() => ({
     accept: "image",
@@ -188,7 +238,8 @@ useEffect(() => {
           console.log('nothing selected')
         } else {
 
-        setGardenSquare(gardenSquare => [...gardenSquare, {name: event.target.value}])
+        setPlantsInGarden(gardenSquare => [...gardenSquare, {name: event.target.value}])
+       
         }
         setSelected(true)
         console.log('selected ' + selected)
@@ -208,7 +259,7 @@ useEffect(() => {
       }}
       >
       
-      {gardenSquare.map((gardenSquare) => {
+      {plantsInGarden.map((gardenSquare) => {
           return <GardenSquare name={gardenSquare.name} plantId={gardenSquare.plantId}/>
         })}
         

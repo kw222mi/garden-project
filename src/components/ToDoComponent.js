@@ -47,15 +47,14 @@ function ToDoComponent () {
      *Get the list of todos.
      */
     const getTodos = async () => {
-           
+      try{
         const q = query(collection(db, "todos"), where("userId", "==", uid))
         const data = await getDocs(q);
           setTodos(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
 
-      //const data = await getDocs(todolistCollectionRef)
-      //data.forEach((doc) => {
-        //console.log(doc.id, ' => ', doc.data())
-      //})
+       } catch(e) {
+            console.log(e);
+        }
 
       //setTodos(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
     }
@@ -81,7 +80,11 @@ function ToDoComponent () {
   }
 
   return (
-    <div className="todolist-container">
+    <div className="todolist-container"> <div>
+    <Link to="/" className="btn btn-primary w-100 mt-3">
+          Menu
+        </Link>
+    </div> 
       <div>
       <Link to="/garden" className="btn btn-primary w-100 mt-3">
             My garden

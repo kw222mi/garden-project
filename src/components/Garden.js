@@ -27,10 +27,9 @@ function Garden () {
   const [garden, setGardens] = useState([])
   const [newGardenType, setNewGardenType] = useState('Not set')
   const [error, setError] = useState('')
-
-  const gardensCollectionRef = collection(db, 'gardens')
   const [loading, setLoading] = useState(false)
-
+  const gardensCollectionRef = collection(db, 'gardens')
+  
   const auth = getAuth()
   let uid
   onAuthStateChanged(auth, (user) => {
@@ -43,21 +42,34 @@ function Garden () {
     }
   })
 
-  const testIt = async () => {
+   useEffect(() => {
+    getAuthGarden()
+  }, [])
+
+
+  
+  const getAuthGarden = async () => {
+   
+  
+    try{
   const q = query(collection(db, "gardens"), where("userId", "==", uid))
   const data = await getDocs(q);
-  //querySnapshot.forEach((doc) => {
+  //data.forEach((doc) => {
   // doc.data() is never undefined for query doc snapshots
   //console.log('hello' + doc.id, " => ", doc.data());
     //})
     setGardens(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+  } catch(e) {
+    console.log(e);
+}
+    
   }
   /**
    *
    */
   const createGarden = async () => {
     if ((newWidth > 30 && newWidth < 3000) && (newHeight > 30 && newHeight < 3000)) {
-      // Disables the button
+      // Disables the create button
       setLoading(true)
       // Store the garden in the db
       await addDoc(gardensCollectionRef, { name: newGardenName, height: Number(newHeight), width: Number(newWidth), type: newGardenType, userId: uid })
@@ -76,7 +88,7 @@ function Garden () {
   const getGardens = async () => {
    // const data = await getDocs(gardensCollectionRef)
    // setGardens(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
-    testIt()
+   getAuthGarden()
   }
 
   /**
@@ -163,11 +175,18 @@ function Garden () {
 
   return (
     <div className="Garden">
+     <div>
+      <Link to="/" className="btn btn-primary w-100 mt-3">
+            Menu
+          </Link>
+      </div>
     <div>
       <Link to="/todo" className="btn btn-primary w-100 mt-3">
             TodoList
           </Link>
       </div>
+     
+      
     <h2>My Gardens</h2>
     {error && <Alert variant="danger">{error}</Alert>}
       <input
@@ -217,6 +236,7 @@ function Garden () {
                 width={Math.floor(garden.width / 20) * 50}
                 type={getGardenType(garden.type)}
                 gardenId={garden.id}
+                plantsInGarden={garden.plantsInGarden}
               />
             <button
               onClick={() => {
