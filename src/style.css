@@ -227,6 +227,15 @@
   /*Login */
 
   /*Drag and Drop*/
+
+  .plant-select {
+    width: 200px;
+  }
+
+  .hidden {
+    visibility: hidden;
+  }
+
   .ikon {
     height: 50px;
     width: 50px;
@@ -259,6 +268,8 @@
     
     border: 2px solid black;
   }
+
+ 
 
  
   

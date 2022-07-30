@@ -29,6 +29,7 @@ import {
   doc
 } from 'firebase/firestore'
 import GardenSquare from './GardenSquare'
+import PlantCard from './PlantCard'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
 const PictureList = [
@@ -112,9 +113,11 @@ function DragDrop(props) {
   const [plantsInGarden, setPlantsInGarden] = useState(props.plantsInGarden)
   const [plantList, setPlantList] = useState([])
   const [selected, setSelected] = useState(false)
+  const [selectedPlant, setSelectedPlant] = useState([])
   const gardensCollectionRef = collection(db, 'gardens')
   const plantsCollectionRef = collection(db, "plants")
-
+  
+  
   let gardenId = props.gardenId
   const auth = getAuth()
   let uid
@@ -128,6 +131,11 @@ function DragDrop(props) {
     }
   })
 
+  useEffect(() => {
+
+    console.log(selectedPlant)
+  }, [selectedPlant])
+
 useEffect(() => {
 
   savePlantsInGarden(gardenId, plantsInGarden)
@@ -138,15 +146,11 @@ useEffect(() => {
   const getPlants = async () => {
     const data = await getDocs(plantsCollectionRef);
     setPlantList(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    
-  };
-
+  }
   getPlants()
   let numberOfSquares = (props.height/50)*(props.width/50)
   
   console.log("Sqares " + numberOfSquares)
-  console.log("garden id " + props.gardenId)
-  console.log("array" + plantsInGarden)
   /*
   for (let i=0; i< numberOfSquares; i++){
     setPlantsIngarden(gardenSquare => [...gardenSquare, {name: tomato, id: gardenId}])
@@ -156,7 +160,7 @@ useEffect(() => {
 }, [])
 
 useEffect(() => {
-  const getPlantsinGarden = async () => {
+  const getPlantsInGarden = async () => {
     const q = query(collection(db, "gardens"), where("userId", "==", uid))
   const data = await getDocs(q);
   //let test = data.getValue(plantsInGarden)
@@ -166,9 +170,10 @@ useEffect(() => {
 
   }
 
- 
+  
 
-  getPlantsinGarden()
+
+  getPlantsInGarden()
   let numberOfSquares = (props.height/50)*(props.width/50)
   
   
@@ -211,6 +216,70 @@ const savePlantsInGarden = async (id, plantsInGarden) => {
     console.log(board)
     
   }
+
+  const handleClick = ((item, index) => {
+
+    let plantName
+    let plantUrl
+
+    selectedPlant.map((plant) => 
+   
+    plantName = plant.name
+
+    )
+
+    selectedPlant.map((plant) => 
+   
+    plantUrl = plant.url
+
+    )
+
+
+    if (plantName === 'nothing selected'){
+      return
+    } else {
+
+      const arr = [...plantsInGarden]
+      console.log('selected plant name ' +  selectedPlant)
+      console.log('index name ' + arr[index].name )
+      console.log('plant name ' + plantName)
+      arr[index].name = plantName
+      arr[index].url = plantUrl
+      
+      setPlantsInGarden(arr)
+
+    }
+
+    
+      
+  })
+
+  const showPlantFacts = async (event) => {
+   
+  
+    try{
+      const q = query(collection(db, "plants"), where("name", "==", event.target.value))
+      const data = await getDocs(q);
+      data.forEach((doc) => {
+      
+      console.log('hello' + doc.id, " => ", doc.data());
+
+      setSelectedPlant(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+      
+      
+      
+        })
+
+        /*{selectedPlant.map((plant) => {
+          return <PlantCard name={plant.name} url={plant.url} type={plant.type}
+      ></PlantCard>
+      })}
+      */
+        
+      } catch(e) {
+        console.log(e);
+    }
+  }
   
   
   return (
@@ -229,26 +298,30 @@ const savePlantsInGarden = async (id, plantsInGarden) => {
         })}
         </div>
 
+        <div className = "plant-select">
         <label for="plantsInGarden"></label>
       <select id="plantType" name="plantType" onChange={(event) => {
-        console.log('selected ' + selected)
-        setSelected(null)
-        console.log('selected ' + selected)
-        if (event.target.value === 'nothing selected'){
-          console.log('nothing selected')
-        } else {
-
-        setPlantsInGarden(gardenSquare => [...gardenSquare, {name: event.target.value}])
-       
-        }
-        setSelected(true)
-        console.log('selected ' + selected)
+        showPlantFacts(event)
+        
       }}>
-      <option value='nothing selected' selected={selected} className='select_plants'>Choose plants to grow:</option>
+      <option value='nothing selected' selected={selected}>Choose plants to grow:</option>
       {plantList.map((plant) => {
           return <option name={plant.name} value={plant.name} >{plant.name}</option>
         })}
       </select>
+      </div>
+      {selectedPlant.map((plant) => {
+        return <PlantCard 
+        name={plant.name} 
+        friends={plant.friends} 
+        avoid={plant.avoid}
+        url={plant.url}
+        minTime={plant.time_min}
+        maxTime={plant.time_max}
+        type={plant.type}
+        />
+      
+  })}
       <div 
       className="Board" 
       ref={drop} 
@@ -258,14 +331,26 @@ const savePlantsInGarden = async (id, plantsInGarden) => {
       border: `5px solid ${props.type}`
       }}
       >
+
       
-      {plantsInGarden.map((gardenSquare) => {
-          return <GardenSquare name={gardenSquare.name} plantId={gardenSquare.plantId}/>
-        })}
+        {plantsInGarden.map((item, index) => {
+            return <GardenSquare key={item.id} name={item.name} url={item.url} onClick={() => handleClick(item,index)}/>
+        })
         
+
+
+      
+      //{plantsInGarden.map((gardenSquare) => {
+          //return <GardenSquare name={gardenSquare.name} id={gardenSquare.id} onClick={(event) => {
+                
+               // handleClick(event)
+                
+              //}}/>
+        }
+
       </div>
     </div>
-  );
+  )
 }
 
 /*

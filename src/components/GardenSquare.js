@@ -23,16 +23,27 @@ import cucumber from '../pictures/cucumber_ikon.jpg'
  * @param props
  */
 export default function GardenSquare (props) {
-let name = props.name
-  console.log("propsname in square " + name)
+ 
   return (
         <div
-        class="square"
-        name={name}
-        plantid={props.plantid}
+        className="square"
+        name={props.name}
+        id={props.id}
+        
         >
-          <img src={(`${props.name}`)} alt={props.name}/>
+        <button id= {props.id} onClick={props.onClick}
+        >      
+        <img height= "40px" width = "40px" src={(`${props.url}`)} alt={props.name} />       
+
+              </button>
           
         </div>
+
+
+  
+   
+
+
+
   )
 }

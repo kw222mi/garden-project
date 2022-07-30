@@ -71,8 +71,10 @@ function Garden () {
     if ((newWidth > 30 && newWidth < 3000) && (newHeight > 30 && newHeight < 3000)) {
       // Disables the create button
       setLoading(true)
+      //let plantsInGarden = Array((newWidth/20)*(newHeight/20)).fill('name')
+      let plantsInGarden = emptyPlantsArray(newWidth,newHeight)
       // Store the garden in the db
-      await addDoc(gardensCollectionRef, { name: newGardenName, height: Number(newHeight), width: Number(newWidth), type: newGardenType, userId: uid })
+      await addDoc(gardensCollectionRef, { name: newGardenName, height: Number(newHeight), width: Number(newWidth), type: newGardenType, userId: uid, plantsInGarden: plantsInGarden })
       getGardens()
       // To clear the form
       window.location.reload()
@@ -80,6 +82,15 @@ function Garden () {
       setError('Wrong size could not create garden')
     }
     setLoading(false)
+  }
+
+  const emptyPlantsArray = (newWidth, newHeight) =>{
+    let numberOfPlants = (newWidth/20)*(newHeight/20)
+    let plantArray = []
+    for(let i = 0; i<numberOfPlants; i++){
+      plantArray.push( {id: i, name: ''})
+    }
+    return plantArray
   }
 
   /**
