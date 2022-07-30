@@ -18,7 +18,6 @@ import potato from '../pictures/potato_ikon.jpg'
 import tomato from '../pictures/tomato_ikon.jpg'
 import cucumber from '../pictures/cucumber_ikon.jpg'
 
-
 import { db } from "../firebase-config";
 import {
   collection,
@@ -30,6 +29,7 @@ import {
 } from 'firebase/firestore'
 import GardenSquare from './GardenSquare'
 import PlantCard from './PlantCard'
+import Progressbar from './Progressbar'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
 const PictureList = [
@@ -116,6 +116,12 @@ function DragDrop(props) {
   const [selectedPlant, setSelectedPlant] = useState([])
   const gardensCollectionRef = collection(db, 'gardens')
   const plantsCollectionRef = collection(db, "plants")
+
+  const testData = [
+    { bgcolor: "#6a1b9a", completed: 60 },
+    { bgcolor: "#00695c", completed: 30 },
+    { bgcolor: "#ef6c00", completed: 53 },
+  ]
   
   
   let gardenId = props.gardenId
@@ -221,19 +227,17 @@ const savePlantsInGarden = async (id, plantsInGarden) => {
 
     let plantName
     let plantUrl
+    let minTime
 
     selectedPlant.map((plant) => 
-   
     plantName = plant.name
 
     )
 
     selectedPlant.map((plant) => 
-   
     plantUrl = plant.url
 
     )
-
 
     if (plantName === 'nothing selected'){
       return
@@ -247,10 +251,13 @@ const savePlantsInGarden = async (id, plantsInGarden) => {
       arr[index].url = plantUrl
       
       setPlantsInGarden(arr)
+      
+      selectedPlant.map((plant) => 
+      minTime = plant.time_min
 
+    )
+      progressTime(minTime)
     }
-
-    
       
   })
 
@@ -280,6 +287,24 @@ const savePlantsInGarden = async (id, plantsInGarden) => {
         console.log(e);
     }
   }
+
+  const progressTime = ((minTime) => {
+
+    const date = new Date()
+    console.log("date is: ", date);
+
+    const dateObject = {
+    year: date.getFullYear(),
+    month: date.toLocaleString("en-US", { month: "long" }),
+    day: date.getDate(),
+    hours: date.getHours(),
+    minutes: date.getMinutes(),
+    seconds: date.getSeconds(),
+}
+console.log("print month value: ", dateObject.month);
+console.log("print all object values: ", dateObject);
+  })
+  
   
   
   return (
@@ -322,6 +347,7 @@ const savePlantsInGarden = async (id, plantsInGarden) => {
         />
       
   })}
+ 
       <div 
       className="Board" 
       ref={drop} 
@@ -331,23 +357,19 @@ const savePlantsInGarden = async (id, plantsInGarden) => {
       border: `5px solid ${props.type}`
       }}
       >
-
+       
       
         {plantsInGarden.map((item, index) => {
             return <GardenSquare key={item.id} name={item.name} url={item.url} onClick={() => handleClick(item,index)}/>
         })
         
-
-
-      
-      //{plantsInGarden.map((gardenSquare) => {
-          //return <GardenSquare name={gardenSquare.name} id={gardenSquare.id} onClick={(event) => {
-                
-               // handleClick(event)
-                
-              //}}/>
         }
 
+      </div>
+      <div className="App">
+        {testData.map((item, idx) => (
+          <Progressbar key={idx} bgcolor={item.bgcolor} completed={item.completed} />
+        ))}
       </div>
     </div>
   )

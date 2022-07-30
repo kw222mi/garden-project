@@ -6,7 +6,6 @@ import React from 'react'
  * @param props
  */
 export default function PlantCard (props) {
-let name = props.name
  
   return (
         <div className='plant-card'>
@@ -17,6 +16,7 @@ let name = props.name
                 <p>Type: {props.type}</p>   
                 <p>Friends: {props.friends}</p>  
                 <p>Avoid: {props.avoid}</p>  
+                <p>Time to harvest: {props.minTime} - {props.maxTime} days</p>
             </div>
          </div>
 
