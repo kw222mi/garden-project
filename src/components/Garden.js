@@ -84,11 +84,12 @@ function Garden () {
     setLoading(false)
   }
 
-  const emptyPlantsArray = (newWidth, newHeight) =>{
+  const emptyPlantsArray = (newWidth, newHeight) => {
     let numberOfPlants = (newWidth/20)*(newHeight/20)
     let plantArray = []
     for(let i = 0; i<numberOfPlants; i++){
-      plantArray.push( {id: i, name: ''})
+      plantArray.push( {id: i, name: '', startDate: 0,
+      finnishDate: 0})
     }
     return plantArray
   }

@@ -114,15 +114,13 @@ function DragDrop(props) {
   const [plantList, setPlantList] = useState([])
   const [selected, setSelected] = useState(false)
   const [selectedPlant, setSelectedPlant] = useState([])
+  const [ progressData,  setProgressData] = useState([
+  { bgcolor: "#6a1b9a", completed: 60 },
+  { bgcolor: "#00695c", completed: 30 },
+  { bgcolor: "#ef6c00", completed: 53 },])
   const gardensCollectionRef = collection(db, 'gardens')
   const plantsCollectionRef = collection(db, "plants")
 
-  const testData = [
-    { bgcolor: "#6a1b9a", completed: 60 },
-    { bgcolor: "#00695c", completed: 30 },
-    { bgcolor: "#ef6c00", completed: 53 },
-  ]
-  
   
   let gardenId = props.gardenId
   const auth = getAuth()
@@ -175,8 +173,6 @@ useEffect(() => {
     //setPlantsInGarden(data.docs.map((doc) => ({ ...doc.data(), plantsInGarden: plantsInGarden }))); 
 
   }
-
-  
 
 
   getPlantsInGarden()
@@ -239,6 +235,12 @@ const savePlantsInGarden = async (id, plantsInGarden) => {
 
     )
 
+    selectedPlant.map((plant) => 
+      minTime = plant.time_min
+    )
+    let startDate = Date.now()
+    let finnishDate = startDate + minTime*86400000
+
     if (plantName === 'nothing selected'){
       return
     } else {
@@ -249,17 +251,21 @@ const savePlantsInGarden = async (id, plantsInGarden) => {
       console.log('plant name ' + plantName)
       arr[index].name = plantName
       arr[index].url = plantUrl
-      
+      arr[index].startDate = startDate
+      arr[index].finnishDate = finnishDate
+      console.log('index date ' + arr[index].startDate )
+    
       setPlantsInGarden(arr)
-      
-      selectedPlant.map((plant) => 
-      minTime = plant.time_min
 
-    )
-      progressTime(minTime)
+      setProgressbar()
+      
     }
       
   })
+
+  
+
+ 
 
   const showPlantFacts = async (event) => {
    
@@ -288,22 +294,24 @@ const savePlantsInGarden = async (id, plantsInGarden) => {
     }
   }
 
-  const progressTime = ((minTime) => {
-
-    const date = new Date()
-    console.log("date is: ", date);
-
-    const dateObject = {
-    year: date.getFullYear(),
-    month: date.toLocaleString("en-US", { month: "long" }),
-    day: date.getDate(),
-    hours: date.getHours(),
-    minutes: date.getMinutes(),
-    seconds: date.getSeconds(),
-}
-console.log("print month value: ", dateObject.month);
-console.log("print all object values: ", dateObject);
-  })
+  
+  
+  const setProgressbar = () => {
+   
+    let sortedArray  = plantsInGarden.sort(({finnishDate:a}, {finnishDate:b}) => a-b)
+    sortedArray.map ((plant) => {
+      console.log('plantjävelns namn ' + plant.name)
+    })
+    
+    let todayDate = Date.now()
+    let progress = Math.floor(100*(todayDate-sortedArray[0].startDate) / (sortedArray[0].finnishDate-sortedArray[0].startDate))
+    console.log('progress  ' + progress)
+    let test = 10
+    setProgressData([
+      { bgcolor: "#6a1b9a", completed: progress },
+      { bgcolor: "#00695c", completed: 30 },
+      { bgcolor: "#ef6c00", completed: 53 },]
+    )}
   
   
   
@@ -367,7 +375,7 @@ console.log("print all object values: ", dateObject);
 
       </div>
       <div className="App">
-        {testData.map((item, idx) => (
+        {progressData.map((item, idx) => (
           <Progressbar key={idx} bgcolor={item.bgcolor} completed={item.completed} />
         ))}
       </div>
