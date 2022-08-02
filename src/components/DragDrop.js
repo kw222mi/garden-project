@@ -112,55 +112,48 @@ function DragDrop(props) {
   const [board, setBoard] = useState([{ }])
   const [plantsInGarden, setPlantsInGarden] = useState(props.plantsInGarden)
   const [plantList, setPlantList] = useState([])
+  const [sortedPlantList, setSortedPlantList] = useState([])
   const [selected, setSelected] = useState(false)
   const [selectedPlant, setSelectedPlant] = useState([])
-  const [ progressData,  setProgressData] = useState([
-  { bgcolor: "#6a1b9a", completed: 60 },
-  { bgcolor: "#00695c", completed: 30 },
-  { bgcolor: "#ef6c00", completed: 53 },])
-  const gardensCollectionRef = collection(db, 'gardens')
+  const [ progressData,  setProgressData] = useState([])
+ // const gardensCollectionRef = collection(db, 'gardens')
   const plantsCollectionRef = collection(db, "plants")
 
   
-  let gardenId = props.gardenId
+  const gardenId = props.gardenId
   const auth = getAuth()
   let uid
   onAuthStateChanged(auth, (user) => {
     if (user) {
     // User is signed in
       uid = user.uid
-      console.log(uid)
     } else {
      console.log('User is signed out')
     }
   })
 
+  /*
   useEffect(() => {
 
     console.log(selectedPlant)
   }, [selectedPlant])
+*/
+
+  useEffect(() => {
+    setProgressbar()
+  }, [])
 
 useEffect(() => {
-
   savePlantsInGarden(gardenId, plantsInGarden)
 }, [plantsInGarden])
-
 
 useEffect(() => {
   const getPlants = async () => {
     const data = await getDocs(plantsCollectionRef);
     setPlantList(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    setSortedPlantList(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
   }
   getPlants()
-  let numberOfSquares = (props.height/50)*(props.width/50)
-  
-  console.log("Sqares " + numberOfSquares)
-  /*
-  for (let i=0; i< numberOfSquares; i++){
-    setPlantsIngarden(gardenSquare => [...gardenSquare, {name: tomato, id: gardenId}])
-    console.log("array" + gardenSquare.name)
-  }
-  */
 }, [])
 
 useEffect(() => {
@@ -173,12 +166,9 @@ useEffect(() => {
     //setPlantsInGarden(data.docs.map((doc) => ({ ...doc.data(), plantsInGarden: plantsInGarden }))); 
 
   }
-
-
   getPlantsInGarden()
-  let numberOfSquares = (props.height/50)*(props.width/50)
-  
-  
+  //let numberOfSquares = (props.height/50)*(props.width/50)
+   
   console.log("get array" + plantsInGarden)
   /*
   for (let i=0; i< numberOfSquares; i++){
@@ -189,7 +179,6 @@ useEffect(() => {
 }, [])
 
 const savePlantsInGarden = async (id, plantsInGarden) => {
-  
   const gardenDoc = doc(db, 'gardens', id)
   const newField = { plantsInGarden}
   await updateDoc(gardenDoc, newField)
@@ -204,19 +193,59 @@ const savePlantsInGarden = async (id, plantsInGarden) => {
     }),
   }))
 
+  
   const addImageToBoard = (id) => {
     const pictureList = PictureList.filter((picture) => id === picture.id);
     setBoard((board) => [...board, pictureList[0]]);
-
-   // updateGarden(id) 
+ 
   }
 
+  /*
   const addImageToBoardNew = (id) => {
     console.log(plantList)
     const pList = plantList.filter((plant) => id === plant.id)
     setBoard((board) => [...board, pList[0]])
     console.log(board)
     
+  }
+  */
+
+  /**
+   * 
+   * @param {*} event 
+   */
+  const sortPlantList = (event) => {
+    let copyPlantList = [...plantList]
+
+    //show all plants
+    if(event.target.value === 'all'){
+      setSortedPlantList(copyPlantList)
+      }
+     //sort the plants by time to harvest
+    if(event.target.value === 'time_min'){
+    let sortedPlants  = copyPlantList.sort(({time_min:a}, {time_min:b}) => a-b) 
+    setSortedPlantList(sortedPlants)
+    }
+    //show only plants type small
+  if (event.target.value === 'small'){
+    let onlySmall = copyPlantList.filter(copyPlantList => copyPlantList.type === 'small')
+    setSortedPlantList(onlySmall)
+  }
+  //show only plants type giving
+  if (event.target.value === 'giving'){
+    let onlyGiving = copyPlantList.filter(copyPlantList => copyPlantList.type === 'giving')
+     setSortedPlantList(onlyGiving)
+  }
+  //show only plants type medium
+  if (event.target.value === 'medium'){
+    let onlyMedium = copyPlantList.filter(copyPlantList => copyPlantList.type === 'medium')
+    setSortedPlantList(onlyMedium)
+  }
+  //show only plants type heavy
+  if (event.target.value === 'heavy'){
+    let onlyHeavy = copyPlantList.filter(copyPlantList => copyPlantList.type === 'heavy')
+    setSortedPlantList(onlyHeavy)
+  }
   }
 
   const handleClick = ((item, index) => {
@@ -262,86 +291,133 @@ const savePlantsInGarden = async (id, plantsInGarden) => {
     }
       
   })
-
   
-
- 
-
   const showPlantFacts = async (event) => {
-   
-  
+
+    if (event.target.value === 'nothing selected'){
+      console.log('nothing selected')
+      return
+    } else {
+     
     try{
       const q = query(collection(db, "plants"), where("name", "==", event.target.value))
       const data = await getDocs(q);
       data.forEach((doc) => {
       
-      console.log('hello' + doc.id, " => ", doc.data());
+     // console.log('hello' + doc.id, " => ", doc.data());
 
       setSelectedPlant(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
-      
-      
-      
+          
         })
-
-        /*{selectedPlant.map((plant) => {
-          return <PlantCard name={plant.name} url={plant.url} type={plant.type}
-      ></PlantCard>
-      })}
-      */
         
       } catch(e) {
         console.log(e);
     }
   }
+  }
 
-  
-  
-  const setProgressbar = () => {
-   
-    let sortedArray  = plantsInGarden.sort(({finnishDate:a}, {finnishDate:b}) => a-b)
-    sortedArray.map ((plant) => {
-      console.log('plantjävelns namn ' + plant.name)
-    })
-    
+  const progressbarArray = () => {
+     //copy the array of plants
+     let copyPlantsInGarden = [...plantsInGarden]
+      //sort the plants by time to harvest
+    let sortedArray  = copyPlantsInGarden.sort(({finnishDate:a}, {finnishDate:b}) => a-b)
+    //remove the duplicates
+    function getUniqueListBy(sortedArray, key) {
+      return [...new Map(sortedArray.map(item => [item[key], item])).values()]
+      }
+    const uniqArray = getUniqueListBy(sortedArray, 'name')
+    //remove any empty slots
+    if (uniqArray[0].name ===''){
+      uniqArray.splice(0,1)
+    }else {
+      console.log('no empty values')
+    }
+    console.log(uniqArray)
+    return uniqArray
+  }
+
+    const setProgressbar = () => {
+    let progress
+    let progress2
+    let progress3
+    let plantname
+    let plantname2
+    let plantname3
+    // get the date of today
     let todayDate = Date.now()
-    let progress = Math.floor(100*(todayDate-sortedArray[0].startDate) / (sortedArray[0].finnishDate-sortedArray[0].startDate))
-    console.log('progress  ' + progress)
-    let test = 10
-    setProgressData([
-      { bgcolor: "#6a1b9a", completed: progress },
-      { bgcolor: "#00695c", completed: 30 },
-      { bgcolor: "#ef6c00", completed: 53 },]
-    )}
-  
-  
-  
+    const progressArray = progressbarArray()
+    let data = []
+
+    for (let i= 0; i < progressArray.length; i++){
+      progress = Math.floor(100*(todayDate-progressArray[i].startDate) / (progressArray[i].finnishDate-progressArray[i].startDate))
+      plantname = progressArray[i].name
+      data.push({ name: plantname, bgcolor: "#6a1b9a", completed: progress })
+    }
+    setProgressData(data)
+    /*
+    if (progressArray.length !== 0 ){
+    //get the days to finnished plant
+    progress = Math.floor(100*(todayDate-progressArray[0].startDate) / (progressArray[0].finnishDate-progressArray[0].startDate))
+    //and the name of the plant
+    plantname = progressArray[0].name
+    console.log(' plant name first array' + plantname)
+    setProgressData([{ name: plantname, bgcolor: "#6a1b9a", completed: progress }])
+    }
+    if (progressArray.length>1){
+      progress2 = Math.floor(100*(todayDate-progressArray[1].startDate) / (progressArray[1].finnishDate-progressArray[1].startDate))
+      plantname2 = progressArray[1].name}
+      setProgressData([
+        { name: plantname, bgcolor: "#6a1b9a", completed: progress },
+        {  name: plantname2, bgcolor: "#00695c", completed: progress2}
+      ])
+    if (progressArray.length>2){
+        progress3 = Math.floor(100*(todayDate-progressArray[2].startDate) / (progressArray[2].finnishDate-progressArray[2].startDate))
+       plantname3 = progressArray[2].name
+       setProgressData([
+        { name: plantname, bgcolor: "#6a1b9a", completed: progress },
+        { name: plantname2, bgcolor: "#00695c", completed: progress2 },
+        { name: plantname3, bgcolor: "#ef6c00", completed: progress3 },
+       ])
+      } else {
+        setProgressData([
+          { name: 'nothing is growing yet', bgcolor: "#6a1b9a", completed: 0 },
+         ])
+
+      }
+
+      */
+    }
+    
   return (
     <div>
-      <div className="Pictures">
-        {PictureList.map((picture) => {
-          return <Picture url={picture.url} id={picture.id} />
-          
-        })}
-       
-      </div>
-      <div className="test">
-        {plantList.map((plant) => {
-          return <Picture url={plant.url} id={plant.id} />
-          
-        })}
-        </div>
-
-        <div className = "plant-select">
-        <label for="plantsInGarden"></label>
-      <select id="plantType" name="plantType" onChange={(event) => {
+      <div className = 'plant-select'>
+        <label for='plantsInGarden'></label>
+        <select id="plantType" name='plantType' onChange={(event) => {
         showPlantFacts(event)
         
       }}>
       <option value='nothing selected' selected={selected}>Choose plants to grow:</option>
-      {plantList.map((plant) => {
+      {sortedPlantList.map((plant) => {
           return <option name={plant.name} value={plant.name} >{plant.name}</option>
         })}
       </select>
+
+      <div>
+        <label for='sortPlants'></label>
+        <select id='sortPlants' name='sortPlants' onChange={(event) => {
+        sortPlantList(event)}}>
+        <option value='all' selected={selected}>Show all plants</option>
+        <option value='time_min'>Sort by time to harvest</option>
+        <option value='giving'>Show only giving</option>
+        <option value='small'>Show only small</option>
+        <option value='medium'>Show only medium</option>
+        <option value='heavy'>Show only heavy</option>
+
+        </select>
+
+
+      </div>
+      
       </div>
       {selectedPlant.map((plant) => {
         return <PlantCard 
@@ -376,16 +452,30 @@ const savePlantsInGarden = async (id, plantsInGarden) => {
       </div>
       <div className="App">
         {progressData.map((item, idx) => (
-          <Progressbar key={idx} bgcolor={item.bgcolor} completed={item.completed} />
+          <Progressbar key={idx} bgcolor={item.bgcolor} completed={item.completed} name={item.name}/>
         ))}
       </div>
     </div>
   )
 }
-
+//Code for drag and drop
 /*
 {board.map((picture) => {
           return <Picture url={picture.url} id={picture.id} />
         })}
+
+         <div className="Pictures">
+        {PictureList.map((picture) => {
+          return <Picture url={picture.url} id={picture.id} />
+          
+        })}
+       
+      </div>
+      <div className="test">
+        {plantList.map((plant) => {
+          return <Picture url={plant.url} id={plant.id} />
+          
+        })}
+        </div>
 */
 export default DragDrop;

@@ -17,6 +17,9 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import Alert from 'react-bootstrap/Alert'
 import { Link } from 'react-router-dom'
 
+
+
+
 /**
  *
  */
@@ -44,6 +47,10 @@ function Garden () {
 
    useEffect(() => {
     getAuthGarden()
+  }, [])
+
+  useEffect(() => {
+    getGardens()
   }, [])
 
 
@@ -89,7 +96,7 @@ function Garden () {
     let plantArray = []
     for(let i = 0; i<numberOfPlants; i++){
       plantArray.push( {id: i, name: '', startDate: 0,
-      finnishDate: 0})
+      finnishDate: 0, url: '../pictures/soil_ikon.jpg'})
     }
     return plantArray
   }
@@ -103,6 +110,18 @@ function Garden () {
    getAuthGarden()
   }
 
+  
+  const newTypeOfGarden = async (id, type) => {
+      console.log('klicked type button')
+    /*
+    const newArray = emptyPlantsArray(height, width)
+    const gardenDoc = doc(db, 'gardens', id)
+    const newFields = { type: newType }
+    await updateDoc(gardenDoc, newFields)
+    getGardens()
+    */
+  }
+ 
   /**
    *
    * @param id
@@ -114,6 +133,8 @@ function Garden () {
     await updateDoc(gardenDoc, newFields)
     getGardens()
   }
+
+  
 
   /**
    *
@@ -181,9 +202,7 @@ function Garden () {
     return typeColor
   }
 
-  useEffect(() => {
-    getGardens()
-  }, [])
+ 
 
   return (
     <div className="Garden">
@@ -250,6 +269,16 @@ function Garden () {
                 gardenId={garden.id}
                 plantsInGarden={garden.plantsInGarden}
               />
+
+            <button
+              onClick={() => {
+                newTypeOfGarden(garden.id)
+              }}
+            >
+              {' '}
+              New plants in garden
+            </button>
+              
             <button
               onClick={() => {
                 updateGarden(garden.id, garden.height)
