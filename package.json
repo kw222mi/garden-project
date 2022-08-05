@@ -9,11 +9,13 @@
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
     "babel-plugin-transform-export-extensions": "^6.22.0",
+    "bootstrap": "^5.2.0",
     "dotenv": "^16.0.0",
     "firebase": "^9.6.10",
     "react": "^18.0.0",
     "react-auth-context": "^0.0.2",
-    "react-bootstrap": "^2.3.0",
+    "react-bootstrap": "^2.4.0",
+    "react-bootstrap-accordion": "^1.0.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.0.0",
@@ -23,8 +25,6 @@
     "uuid": "^8.3.2",
     "web-vitals": "^2.1.4"
   },
-  
-  
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -37,16 +37,12 @@
       "react-app/jest"
     ]
   },
-  "browserslist": 
-     [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-  
-  
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not op_mini all"
+  ],
   "devDependencies": {
     "firebase-tools": "^10.7.1"
   }
-  
 }

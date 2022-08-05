@@ -22,46 +22,51 @@ function ToDoComponent () {
   const [todos, setTodos] = useState([])
   const [status, setStatus] = useState('all')
   const [filteredTodos, setFilteredTodos] = useState([])
-
+  //const [uid, setUid] = useState(null)
   const todolistCollectionRef = collection(db, 'todos')
 
   const auth = getAuth()
-  let uid
+ let uid
   onAuthStateChanged(auth, (user) => {
     if (user) {
     // User is signed in
       uid = user.uid
-      console.log(uid)
+      //console.log(uid)
     } else {
      console.log('User is signed out')
     }
   })
 
   // use effect
+
+  useEffect(() => {    
+
+    /**
+     *Get the list of todos.
+     */
+  const getTodos = async () => {
+    try{
+      const q = query(collection(db, "todos"), where("userId", "==", uid))
+      const data = await getDocs(q);
+        setTodos(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+
+     } catch(e) {
+          console.log(e);
+      }
+    }
+    getTodos()
+ 
+ }, [])
+
   useEffect(() => {
     filterHandler()
   }, [todos, status])
 
-  useEffect(() => {
-    /**
-     *Get the list of todos.
-     */
-    const getTodos = async () => {
-      try{
-        const q = query(collection(db, "todos"), where("userId", "==", uid))
-        const data = await getDocs(q);
-          setTodos(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
-
-       } catch(e) {
-            console.log(e);
-        }
-
-      //setTodos(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
-    }
-    getTodos()
-  }, [])
+ 
 
   // Functions
+
+  
   /**
    *Function to filter the todos.
    */

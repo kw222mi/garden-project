@@ -1,19 +1,18 @@
-
+import {render} from '@testing-library/react'
 import Garden from '../Garden'
+import React from 'react'
 
 describe(Garden, () => {
 
-    it('the emptyPlantsArray is creating an empty array', () =>{
-        const array = [{id:0, name:''},{id:1, name:''},{id:2, name:''},{id:3, name:''}]
-        expect(emptyPlantsArray(40,40)).toEqual(array)
+    it('empty array of plants', () =>{
+        //expect(Garden.emptyPlantsArray(40, 40)).toHaveLength(4)
+    //expect(Garden.emptyPlantsArray(111, 111)).toHaveLength(25)
+    //expect(Garden.emptyPlantsArray(99, 111)).toHaveLength(20)
     })
+
+
+   
 })
 
 
 
-/*
-test('emptyPlantsArray', () => {
-    const array = [{id:0, name:''},{id:1, name:''},{id:2, name:''},{id:3, name:''}]
-    expect(emptyPlantsArray(40,40)).toEqual(array)
-})
-*/

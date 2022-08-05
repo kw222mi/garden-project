@@ -8,7 +8,9 @@ import {
 import { auth } from '../firebase-config'
 
 /**
+ * Component to handle the login in the system.
  *
+ * @returns {HTMLElement}-Login form
  */
 export default function Login () {
   const emailRef = useRef()
@@ -19,8 +21,9 @@ export default function Login () {
   const navigate = useNavigate()
 
   /**
+   * Handle the input when submit.
    *
-   * @param e
+   * @param {event} e - the event
    */
   async function handleSubmit (e) {
     e.preventDefault()

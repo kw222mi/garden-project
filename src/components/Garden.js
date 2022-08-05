@@ -16,9 +16,8 @@ import DragDrop from './DragDrop'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import Alert from 'react-bootstrap/Alert'
 import { Link } from 'react-router-dom'
-
-
-
+import Accordion from 'react-bootstrap/Accordion'
+import 'react-bootstrap-accordion/dist/index.css'
 
 /**
  *
@@ -31,41 +30,39 @@ function Garden () {
   const [newGardenType, setNewGardenType] = useState('Not set')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [newType, setNewType] = useState('Not set')
+  //const [uid, setUid] = useState(null)
   const gardensCollectionRef = collection(db, 'gardens')
   
+  
   const auth = getAuth()
-  let uid
+ let uid
   onAuthStateChanged(auth, (user) => {
     if (user) {
     // User is signed in
-      uid = user.uid
+      uid=user.uid
       console.log(uid)
     } else {
      console.log('User is signed out')
     }
   })
 
+
    useEffect(() => {
     getAuthGarden()
   }, [])
 
-  useEffect(() => {
-    getGardens()
-  }, [])
-
-
   
   const getAuthGarden = async () => {
-   
-  
     try{
   const q = query(collection(db, "gardens"), where("userId", "==", uid))
   const data = await getDocs(q);
-  //data.forEach((doc) => {
+  data.forEach((doc) => {
   // doc.data() is never undefined for query doc snapshots
-  //console.log('hello' + doc.id, " => ", doc.data());
-    //})
+  console.log('hello' + doc.id, " => ", doc.data());
+    })
     setGardens(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+    
   } catch(e) {
     console.log(e);
 }
@@ -75,14 +72,13 @@ function Garden () {
    *
    */
   const createGarden = async () => {
-    if ((newWidth > 30 && newWidth < 3000) && (newHeight > 30 && newHeight < 3000)) {
+    if ((newWidth > 29 && newWidth < 301) && (newHeight > 29 && newHeight < 301)) {
       // Disables the create button
       setLoading(true)
-      //let plantsInGarden = Array((newWidth/20)*(newHeight/20)).fill('name')
       let plantsInGarden = emptyPlantsArray(newWidth,newHeight)
       // Store the garden in the db
       await addDoc(gardensCollectionRef, { name: newGardenName, height: Number(newHeight), width: Number(newWidth), type: newGardenType, userId: uid, plantsInGarden: plantsInGarden })
-      getGardens()
+      getAuthGarden()
       // To clear the form
       window.location.reload()
     } else {
@@ -92,34 +88,35 @@ function Garden () {
   }
 
   const emptyPlantsArray = (newWidth, newHeight) => {
-    let numberOfPlants = (newWidth/20)*(newHeight/20)
+    let numberOfPlants = Math.floor((newWidth/20))*Math.floor((newHeight/20))
     let plantArray = []
     for(let i = 0; i<numberOfPlants; i++){
       plantArray.push( {id: i, name: '', startDate: 0,
-      finnishDate: 0, url: '../pictures/soil_ikon.jpg'})
+      finnishDate: 0, url:'./static/media/soil_ikon.734fc5ed.jpg' })
     }
     return plantArray
   }
-
-  /**
-   *
-   */
-  const getGardens = async () => {
-   // const data = await getDocs(gardensCollectionRef)
-   // setGardens(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
-   getAuthGarden()
-  }
-
   
-  const newTypeOfGarden = async (id, type) => {
-      console.log('klicked type button')
-    /*
-    const newArray = emptyPlantsArray(height, width)
+  
+  const newTypeOfGarden = async (id) => {
+    //get size of garden
+    let h
+    let w
+    garden.map((garden)=> {
+      if(garden.id === id){
+      h = garden.height
+      w= garden.width
+      }
+    }) 
+
+    //get a new empty plant array
+    let emptyArray = emptyPlantsArray(w, h)
+    //uppdatera fält
     const gardenDoc = doc(db, 'gardens', id)
-    const newFields = { type: newType }
-    await updateDoc(gardenDoc, newFields)
-    getGardens()
-    */
+        const newFields = { type: newType, plantsInGarden:emptyArray}
+        await updateDoc(gardenDoc, newFields)
+        getAuthGarden()   
+   
   }
  
   /**
@@ -131,10 +128,9 @@ function Garden () {
     const gardenDoc = doc(db, 'gardens', id)
     const newFields = { height: height + 1 }
     await updateDoc(gardenDoc, newFields)
-    getGardens()
+    getAuthGarden()
   }
 
-  
 
   /**
    *
@@ -143,7 +139,7 @@ function Garden () {
   const deleteGarden = async (id) => {
     const gardenDoc = doc(db, 'gardens', id)
     await deleteDoc(gardenDoc)
-    getGardens()
+    getAuthGarden()
   }
 
   /**
@@ -154,11 +150,11 @@ function Garden () {
   const checkHeight = (event) => {
     setError('')
     const height = event.target.value
-    if (height > 30 && height < 3000) {
+    if (height > 29 && height < 301) {
       setNewHeight(height)
     } else {
       setNewHeight(height)
-      setError('Size should be 30 - 3000 cm')
+      setError('Size should be 30 - 300 cm')
     }
   }
 
@@ -169,11 +165,11 @@ function Garden () {
   const checkWidth = (event) => {
     setError('')
     const width = event.target.value
-    if (width > 30 && width < 3000) {
+    if (width > 29 && width < 301) {
       setNewWidth(width)
     } else {
       setNewWidth(width)
-      setError('Size should be 30 - 3000 cm')
+      setError('Size should be 30 - 300 cm')
     }
   }
 
@@ -241,6 +237,7 @@ function Garden () {
         }}
       />
 
+       
        <label for="gardenType"></label>
       <select id="gardenType" name="gardenType" onChange={(event) => {
         setNewGardenType(event.target.value)
@@ -253,6 +250,7 @@ function Garden () {
       </select>
 
       <button onClick={createGarden} disabled={loading}> Create Garden</button>
+      
       {garden.map((garden) => {
         return (
           <div>
@@ -269,6 +267,32 @@ function Garden () {
                 gardenId={garden.id}
                 plantsInGarden={garden.plantsInGarden}
               />
+
+<Accordion >
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>
+        New garden type
+        </Accordion.Header>
+        <Accordion.Body>
+       By selecting a new type of garden you will change the type and 
+       clear the plants.
+        <label for="gardenType"></label>
+      <select id="gardenType" name="gardenType" onChange={(event) => {
+        setNewType(event.target.value)
+       
+      }}>
+      <option value="nothing" selected="selected">Select new garden type:</option>
+      <option value="giving">Giving</option>
+      <option value="small">Small</option>
+      <option value="medium">Medium</option>
+      <option value="heavy">Heavy</option>
+      </select>
+      <button onClick={(event) =>{ newTypeOfGarden( garden.id)}}>Set new plants</button>
+        </Accordion.Body>
+      </Accordion.Item>
+    </Accordion>
+     
+
 
             <button
               onClick={() => {

@@ -14,7 +14,7 @@ export default function Dashboard () {
   const navigate = useNavigate()
 
   /**
-   *  Function to handle the users logout.
+   * Function to handle the users logout.
    */
   async function handleLogout () {
     setError('')
