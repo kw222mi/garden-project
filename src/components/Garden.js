@@ -18,9 +18,12 @@ import Alert from 'react-bootstrap/Alert'
 import { Link } from 'react-router-dom'
 import Accordion from 'react-bootstrap/Accordion'
 import 'react-bootstrap-accordion/dist/index.css'
+import soil from '../pictures/soil_ikon.jpg'
 
 /**
+ * Component to represent a garden.
  *
+ * @returns {HTMLElement} - the garden component.
  */
 function Garden () {
   const [newGardenName, setNewGardenName] = useState('No name')
@@ -31,53 +34,50 @@ function Garden () {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [newType, setNewType] = useState('Not set')
-  //const [uid, setUid] = useState(null)
   const gardensCollectionRef = collection(db, 'gardens')
-  
-  
+
   const auth = getAuth()
- let uid
+  let uid
   onAuthStateChanged(auth, (user) => {
     if (user) {
     // User is signed in
-      uid=user.uid
+      uid = user.uid
       console.log(uid)
     } else {
-     console.log('User is signed out')
+      console.log('User is signed out')
     }
   })
 
-
-   useEffect(() => {
+  useEffect(() => {
     getAuthGarden()
   }, [])
 
-  
+  /**
+   * Get the gardens from the database by user id.
+   */
   const getAuthGarden = async () => {
-    try{
-  const q = query(collection(db, "gardens"), where("userId", "==", uid))
-  const data = await getDocs(q);
-  data.forEach((doc) => {
-  // doc.data() is never undefined for query doc snapshots
-  console.log('hello' + doc.id, " => ", doc.data());
-    })
-    setGardens(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
-    
-  } catch(e) {
-    console.log(e);
-}
-    
+    try {
+      const q = query(collection(db, 'gardens'), where('userId', '==', uid))
+      const data = await getDocs(q)
+      data.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        console.log('hello' + doc.id, ' => ', doc.data())
+      })
+      setGardens(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+    } catch (e) {
+      console.log(e)
+    }
   }
   /**
-   *
+   * Function to create a new garden.
    */
   const createGarden = async () => {
     if ((newWidth > 29 && newWidth < 301) && (newHeight > 29 && newHeight < 301)) {
       // Disables the create button
       setLoading(true)
-      let plantsInGarden = emptyPlantsArray(newWidth,newHeight)
+      const plantsInGarden = emptyPlantsArray(newWidth, newHeight)
       // Store the garden in the db
-      await addDoc(gardensCollectionRef, { name: newGardenName, height: Number(newHeight), width: Number(newWidth), type: newGardenType, userId: uid, plantsInGarden: plantsInGarden })
+      await addDoc(gardensCollectionRef, { name: newGardenName, height: Number(newHeight), width: Number(newWidth), type: newGardenType, userId: uid, plantsInGarden })
       getAuthGarden()
       // To clear the form
       window.location.reload()
@@ -87,42 +87,57 @@ function Garden () {
     setLoading(false)
   }
 
+  /**
+   * Returns an array of empty plants object.
+   *
+   * @param {number} newWidth - width of the garden.
+   * @param {number} newHeight - height of the garden.
+   * @returns {Array} - array of empty plants objects.
+   */
   const emptyPlantsArray = (newWidth, newHeight) => {
-    let numberOfPlants = Math.floor((newWidth/20))*Math.floor((newHeight/20))
-    let plantArray = []
-    for(let i = 0; i<numberOfPlants; i++){
-      plantArray.push( {id: i, name: '', startDate: 0,
-      finnishDate: 0, url:'./static/media/soil_ikon.734fc5ed.jpg' })
+    const numberOfPlants = Math.floor((newWidth / 20)) * Math.floor((newHeight / 20))
+    const plantArray = []
+    for (let i = 0; i < numberOfPlants; i++) {
+      plantArray.push({
+        id: i,
+        name: '',
+        startDate: 0,
+        finnishDate: 0,
+        url: './static/media/soil_ikon.734fc5ed.jpg'
+      })
     }
     return plantArray
   }
-  
-  
+
+  /**
+   * Function to set a new garden type and plants array.
+   *
+   * @param {string} id - id of the garden
+   */
   const newTypeOfGarden = async (id) => {
-    //get size of garden
+    // get size of garden
     let h
     let w
-    garden.map((garden)=> {
-      if(garden.id === id){
-      h = garden.height
-      w= garden.width
+    garden.map((garden) => {
+      if (garden.id === id) {
+        h = garden.height
+        w = garden.width
       }
-    }) 
+    })
 
-    //get a new empty plant array
-    let emptyArray = emptyPlantsArray(w, h)
-    //uppdatera fält
+    // get a new empty plant array
+    const emptyArray = emptyPlantsArray(w, h)
     const gardenDoc = doc(db, 'gardens', id)
-        const newFields = { type: newType, plantsInGarden:emptyArray}
-        await updateDoc(gardenDoc, newFields)
-        getAuthGarden()   
-   
+    const newFields = { type: newType, plantsInGarden: emptyArray }
+    await updateDoc(gardenDoc, newFields)
+    getAuthGarden()
   }
- 
+
   /**
+   * Update the height of the garden.
    *
-   * @param id
-   * @param height
+   * @param {string} id - id of the garden.
+   * @param {number} height - the height of the garden.
    */
   const updateGarden = async (id, height) => {
     const gardenDoc = doc(db, 'gardens', id)
@@ -131,10 +146,10 @@ function Garden () {
     getAuthGarden()
   }
 
-
   /**
+   * Delete a garden.
    *
-   * @param id
+   * @param {string} id - the id of the garden.
    */
   const deleteGarden = async (id) => {
     const gardenDoc = doc(db, 'gardens', id)
@@ -143,9 +158,9 @@ function Garden () {
   }
 
   /**
-   * check the height and help the user enter a valid size.
+   * Check the height and help the user enter a valid size.
    *
-   * @param event
+   * @param {event} event -input event.
    */
   const checkHeight = (event) => {
     setError('')
@@ -159,8 +174,9 @@ function Garden () {
   }
 
   /**
-   * check the width and help the user enter a valid size.
-   * @param event
+   * Check the width and help the user enter a valid size.
+   *
+   * @param {event} event - input event.
    */
   const checkWidth = (event) => {
     setError('')
@@ -174,34 +190,29 @@ function Garden () {
   }
 
   /**
+   * Set the type of garden color.
    *
-   * @param type
+   * @param {string} type -type of garden.
+   * @returns {string} - typecolor
    */
   const getGardenType = (type) => {
     let typeColor
     if (type === 'small') {
-      typeColor = 'yellow'
-      console.log('yellow')
+      typeColor = '#D1E8E2'
     } else if (type === 'medium') {
-      typeColor = 'orange'
-      console.log('orange')
+      typeColor = '#DA7B93'
     } else if (type === 'heavy') {
-      typeColor = 'red'
-      console.log('red')
+      typeColor = '#1C3334'
     } else if (type === 'giving') {
-      typeColor = 'green'
-      console.log('green')
+      typeColor = '#D9B08C'
     } else {
-      typeColor = 'black'
-      console.log('black')
+      typeColor = '#2E151B'
     }
     return typeColor
   }
 
- 
-
   return (
-    <div className="Garden">
+    <div className="garden">
      <div>
       <Link to="/" className="btn btn-primary w-100 mt-3">
             Menu
@@ -212,17 +223,19 @@ function Garden () {
             TodoList
           </Link>
       </div>
-     
-      
-    <h2>My Gardens</h2>
+      <hr className='garden-hr'></hr>
+    <header  className='garden-header'>My Garden</header>
+   <hr className='garden-hr'></hr>
     {error && <Alert variant="danger">{error}</Alert>}
       <input
+        className='garden-input'
         placeholder='Name...'
         onChange={(event) => {
           setNewGardenName(event.target.value)
         }}
       />
       <input
+      className='garden-input'
         type="number"
         placeholder='Width in cm'
         onChange={(event) => {
@@ -230,6 +243,7 @@ function Garden () {
         }}
       />
       <input
+      className='garden-input'
         type="number"
         placeholder='Height in cm'
         onChange={(event) => {
@@ -237,9 +251,8 @@ function Garden () {
         }}
       />
 
-       
        <label for="gardenType"></label>
-      <select id="gardenType" name="gardenType" onChange={(event) => {
+      <select className='garden-type' id='gardenType' name='gardenType' onChange={(event) => {
         setNewGardenType(event.target.value)
       }}>
       <option value="nothing" selected="selected">Choose type of plants:</option>
@@ -249,16 +262,18 @@ function Garden () {
       <option value="heavy">Heavy</option>
       </select>
 
-      <button onClick={createGarden} disabled={loading}> Create Garden</button>
-      
+      <button className='create-garden-button' onClick={createGarden} disabled={loading}> Create Garden</button>
+
+      <hr className='garden-hr-end'></hr>
       {garden.map((garden) => {
         return (
           <div>
             {' '}
-            <h1>Name: {garden.name}</h1>
-            <h1>Height: {garden.height}</h1>
-            <h1>Width: {garden.width}</h1>
-            <h1>Type: {garden.type}</h1>
+            <h3 className='garden-info'>{garden.name}</h3>
+            <p className='garden-info'>
+            Height: {garden.height} &nbsp;
+             Width: {garden.width} &nbsp;
+            Type: {garden.type}</p>
 
               <DragDrop
                 height={Math.floor(garden.height / 20) * 50}
@@ -270,16 +285,16 @@ function Garden () {
 
 <Accordion >
       <Accordion.Item eventKey="0">
-        <Accordion.Header>
+        <Accordion.Header className='accordion-haeder'>
         New garden type
         </Accordion.Header>
         <Accordion.Body>
-       By selecting a new type of garden you will change the type and 
-       clear the plants.
+       By selecting a new type of garden you will change the type and
+       clear the plants. 
+       <br></br>
         <label for="gardenType"></label>
       <select id="gardenType" name="gardenType" onChange={(event) => {
         setNewType(event.target.value)
-       
       }}>
       <option value="nothing" selected="selected">Select new garden type:</option>
       <option value="giving">Giving</option>
@@ -287,31 +302,13 @@ function Garden () {
       <option value="medium">Medium</option>
       <option value="heavy">Heavy</option>
       </select>
-      <button onClick={(event) =>{ newTypeOfGarden( garden.id)}}>Set new plants</button>
+      <button className='new-type-button'onClick={(event) => { newTypeOfGarden(garden.id) }}>Set new plants</button>
         </Accordion.Body>
       </Accordion.Item>
     </Accordion>
-     
-
-
-            <button
-              onClick={() => {
-                newTypeOfGarden(garden.id)
-              }}
-            >
-              {' '}
-              New plants in garden
-            </button>
-              
-            <button
-              onClick={() => {
-                updateGarden(garden.id, garden.height)
-              }}
-            >
-              {' '}
-              Increase Height
-            </button>
-            <button
+        
+            <button 
+            className='delete-garden-button'
               onClick={() => {
                 deleteGarden(garden.id)
               }}
@@ -319,9 +316,11 @@ function Garden () {
               {' '}
               Delete Garden
             </button>
+            <hr className='garden-hr-end'></hr>
           </div>
         )
       })}
+     
     </div>
   )
 }

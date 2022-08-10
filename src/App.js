@@ -11,6 +11,7 @@ import ToDoComponent from './components/ToDoComponent'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import './style.css'
 
 const auth = getAuth()
 onAuthStateChanged(auth, (user) => {
@@ -26,8 +27,9 @@ onAuthStateChanged(auth, (user) => {
   }
 })
 /**
+ * App component for the garden application.
  *
- * @returns
+ * @returns {HTMLElement} - the application
  */
 function App () {
   return (

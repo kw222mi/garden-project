@@ -4,54 +4,60 @@ import { auth } from '../firebase-config'
 const AuthContext = React.createContext()
 
 /**
- * Context for authorizaion
- * @returns {context}
+ * Context for authorizaion.
+ *
+ * @returns {*} - context
  */
-export function useAuth() {
+export function useAuth () {
   return useContext(AuthContext)
 }
 
 /**
- * 
- * @param {*} param0 
- * @returns 
+ * Set the current user.
+ *
+ * @param {*} param0 - param
+ * @returns {*} - context
  */
-export function AuthProvider({ children }) {
+export function AuthProvider ({ children }) {
   const [currentUser, setCurrentUser] = useState()
   const [loading, setLoading] = useState(true)
 
   /**
-   * 
-   * @param {*} email 
-   * @param {*} password 
-   * @returns 
+   * Signup.
+   *
+   * @param {*} email - email
+   * @param {*} password - password
+   * @returns {*} auth context
    */
-  function signup(email, password) {
+  function signup (email, password) {
     return auth.createUserWithEmailAndPassword(email, password)
   }
 
   /**
-   * 
-   * @param {*} email 
-   * @param {*} password 
-   * @returns 
+   * Login.
+   *
+   * @param {*} email - email
+   * @param {*} password - password
+   * @returns {*} auth context
    */
   function login (email, password) {
     return auth.signInWithEmailAndPassword(email, password)
   }
 
   /**
-   * 
-   * @returns 
+   * Logout.
+   *
+   * @returns {*} auth context
    */
-  function logout() {
+  function logout () {
     return auth.signOut()
   }
 
   /**
-   * 
-   * @param {*} email 
-   * @returns 
+   * Reset password.
+   *
+   * @param {*} email - email
+   * @returns {*} auth context
    */
   function resetPassword (email) {
     return auth.sendPasswordResetEmail(email)

@@ -1,12 +1,8 @@
 import React, { useRef, useState } from 'react'
 import { Form, Button, Card, Alert } from 'react-bootstrap'
-// import { useAuth } from '../contexts/AuthContext'
 import { Link } from 'react-router-dom'
 import { auth } from '../firebase-config'
-import {
-  sendPasswordResetEmail
-
-} from 'firebase/auth'
+import { sendPasswordResetEmail } from 'firebase/auth'
 
 /**
  * Function to reset the users password.
@@ -15,7 +11,6 @@ import {
  */
 export default function ForgotPassword () {
   const emailRef = useRef()
-  // const { resetPassword } = useAuth()
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
@@ -23,7 +18,7 @@ export default function ForgotPassword () {
   /**
    * Handles the change of password.
    *
-   * @param {SubmitEvent} e
+   * @param {event} e - the subminevent.
    */
   async function handleSubmit (e) {
     e.preventDefault()
@@ -49,13 +44,20 @@ export default function ForgotPassword () {
           {error && <Alert variant="danger">{error}</Alert>}
           {message && <Alert variant="success">{message}</Alert>}
           <Form onSubmit={handleSubmit}>
-            <Form.Group id="email">
-              <Form.Label>Email</Form.Label>
-              <Form.Control type="email" ref={emailRef} required />
-            </Form.Group>
+
+          <div class="form-row">
+            <div class="col">
+          <div className='form-group row'>
+            <label for='forgotPasswordForm'></label>
+            <input type='text' className='form-control' id='forgotPasswordForm' placeholder='Email'
+              ref={emailRef} required />
+            </div>
+            </div>
+
             <Button disabled={loading} className="w-100" type="submit">
               Reset Password
             </Button>
+            </div>
           </Form>
           <div className="w-100 text-center mt-3">
             <Link to="/login">Login</Link>

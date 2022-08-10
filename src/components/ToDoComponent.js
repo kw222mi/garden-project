@@ -1,12 +1,13 @@
 
 import React, { useState, useEffect } from 'react'
-import '../style.css'
 import Form from './Form'
 import ToDoList from './ToDoList'
-import { collection,  
+import {
+  collection,
   where,
   query,
-  getDocs } from 'firebase/firestore'
+  getDocs
+} from 'firebase/firestore'
 import { db } from '../firebase-config'
 import { Link, useNavigate } from 'react-router-dom'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
@@ -22,51 +23,45 @@ function ToDoComponent () {
   const [todos, setTodos] = useState([])
   const [status, setStatus] = useState('all')
   const [filteredTodos, setFilteredTodos] = useState([])
-  //const [uid, setUid] = useState(null)
+  // const [uid, setUid] = useState(null)
   const todolistCollectionRef = collection(db, 'todos')
 
   const auth = getAuth()
- let uid
+  let uid
   onAuthStateChanged(auth, (user) => {
     if (user) {
     // User is signed in
       uid = user.uid
-      //console.log(uid)
+      // console.log(uid)
     } else {
-     console.log('User is signed out')
+      console.log('User is signed out')
     }
   })
 
   // use effect
 
-  useEffect(() => {    
-
+  useEffect(() => {
     /**
      *Get the list of todos.
      */
-  const getTodos = async () => {
-    try{
-      const q = query(collection(db, "todos"), where("userId", "==", uid))
-      const data = await getDocs(q);
+    const getTodos = async () => {
+      try {
+        const q = query(collection(db, 'todos'), where('userId', '==', uid))
+        const data = await getDocs(q)
         setTodos(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
-
-     } catch(e) {
-          console.log(e);
+      } catch (e) {
+        console.log(e)
       }
     }
     getTodos()
- 
- }, [])
+  }, [])
 
   useEffect(() => {
     filterHandler()
   }, [todos, status])
 
- 
-
   // Functions
 
-  
   /**
    *Function to filter the todos.
    */
@@ -89,14 +84,14 @@ function ToDoComponent () {
     <Link to="/" className="btn btn-primary w-100 mt-3">
           Menu
         </Link>
-    </div> 
+    </div>
       <div>
       <Link to="/garden" className="btn btn-primary w-100 mt-3">
             My garden
           </Link>
       </div>
       <header>
-        <h1>Todo list</h1>
+        Todo list
       </header>
       <Form todos={todos} setTodos={setTodos} inputText={inputText} setInputText={setInputText}
         setStatus={setStatus}

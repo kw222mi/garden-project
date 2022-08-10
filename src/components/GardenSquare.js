@@ -1,33 +1,42 @@
 import React from 'react'
-
-
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
+import Button from 'react-bootstrap/Button';
 
 /**
+ * Component to represent a garden square.
  *
- * @param props
+ * @param {*} props - incomming props
+ * @returns {HTMLElement} -the gardensquare
  */
 export default function GardenSquare (props) {
- 
+
+      const placement = 'right'
+        
   return (
-        <div
+        <div 
         className="square"
         name={props.name}
         id={props.id}
-        
         >
-        <button id= {props.id} onClick={props.onClick}
-        >      
-        <img height= "40px" width = "40px" src={(`${props.url}`)} alt={props.name} />       
 
-              </button>
-          
+        <OverlayTrigger
+          key={placement}
+          placement={placement}
+          overlay={
+            <Tooltip id={`tooltip-${placement}`}>
+              {props.name}
+            </Tooltip>
+          }
+        >
+           <button id= {props.id} onClick={props.onClick}>
+            <img className='garden-square-img' src={(`${props.url}`)} alt={props.name} />
+            </button>
+        </OverlayTrigger>
+      
+      
+         
+       
         </div>
-
-
-  
-   
-
-
-
   )
 }

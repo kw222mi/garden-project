@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import Picture from '../Picture'
+import Picture from './Picture'
 import { useDrop } from 'react-dnd'
 import '../style.css'
 import peas from '../pictures/peas_ikon.jpg'
@@ -347,7 +347,12 @@ function DragDrop (props) {
     // remove any empty slots
     if (uniqArray[0].name === '') {
       uniqArray.splice(0, 1)
-    } else {
+    } 
+    // only show the 3 that will be ready first
+    if(uniqArray.length>3 ){
+      uniqArray.length = 3
+    }
+    else {
       console.log('no empty values')
     }
     console.log(uniqArray)
@@ -379,14 +384,14 @@ function DragDrop (props) {
     for (let i = 0; i < progressArray.length; i++) {
       progress = Math.floor(100 * (todayDate - progressArray[i].startDate) / (progressArray[i].finnishDate - progressArray[i].startDate))
       plantname = progressArray[i].name
-      data.push({ name: plantname, bgcolor: '#6a1b9a', completed: progress })
+      data.push({ name: plantname, bgcolor: '#376E6F', completed: progress })
     }
     setProgressData(data)
   }
 
   return (
-    <div>
-      <div className = 'plant-select'>
+    <div className= 'drag-drop-container'>
+      <div className = 'plant-select-container'>
         <label for='plantsInGarden'></label>
         <select id="plantType" name='plantType' onChange={(event) => {
           showPlantFacts(event)
@@ -397,7 +402,8 @@ function DragDrop (props) {
       })}
       </select>
 
-      <div>
+      </div>
+      <div className='sort-plants-container'>
         <label for='sortPlants'></label>
         <select id='sortPlants' name='sortPlants' onChange={(event) => {
           sortPlantList(event)
@@ -413,7 +419,7 @@ function DragDrop (props) {
 
       </div>
 
-      </div>
+     
       {selectedPlant.map((plant) => {
         return <PlantCard
         name={plant.name}
@@ -427,7 +433,7 @@ function DragDrop (props) {
       })}
 
       <div
-      className="Board"
+      className="board"
       // ref={drop}
       style = {{
         width: `${props.width}px`,

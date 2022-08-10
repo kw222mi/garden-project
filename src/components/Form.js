@@ -1,23 +1,26 @@
 
-import { collection, 
-  addDoc, 
+import {
+  collection,
+  addDoc,
   where,
   query,
-  getDocs } from 'firebase/firestore'
+  getDocs
+} from 'firebase/firestore'
 import React from 'react'
 import '../style.css'
 import { db } from '../firebase-config'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
 /**
+ * Component to handle input from the user.
  *
- * @param {*} param0
- * @returns
+ * @param {*} param0 - props
+ * @returns {HTMLElement} - the input component
  */
 const Form = ({ inputText, setInputText, todos, setTodos, setStatus }) => {
   const todolistCollectionRef = collection(db, 'todos')
 
-  //Get the user id
+  // Get the user id
   const auth = getAuth()
   let uid
   onAuthStateChanged(auth, (user) => {
@@ -26,42 +29,45 @@ const Form = ({ inputText, setInputText, todos, setTodos, setStatus }) => {
       uid = user.uid
       console.log(uid)
     } else {
-     console.log('User is signed out')
+      console.log('User is signed out')
     }
   })
 
   /**
-   * Function to handle the text input.
+   * Function to handle the text input in.
    *
-   * @param {ChangeEvent} e-text change event.
-   * @param e
+   * @param {event} e - text change event.
    */
   const inputTextHandler = (e) => {
     setInputText(e.target.value)
   }
 
   /**
-   * Handle the submit
+   * Handle the submit.
    *
-   * @param {ClickEvent} e
+   * @param {event} e - the submit event.
    */
   const submitToDoHandler = async (e) => {
     e.preventDefault()
-    await addDoc(todolistCollectionRef, { text: inputText, completed: false, userId: uid})
-    updateTodoList()
-    //setTodos([...todos, { text: inputText, completed: false, userId: uid }])
+    await addDoc(todolistCollectionRef, { text: inputText, completed: false, userId: uid })
+    // updateTodoList()
+    setTodos([...todos, { text: inputText, completed: false, userId: uid }])
     setInputText('')
   }
 
-  const  updateTodoList = async () => {
-    const q = query(collection(db, "todos"), where("userId", "==", uid))
-    const data = await getDocs(q);
-      setTodos(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
-    }
+  /**
+   * Get todolist from database by user id.
+   */
+  const updateTodoList = async () => {
+    const q = query(collection(db, 'todos'), where('userId', '==', uid))
+    const data = await getDocs(q)
+    setTodos(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+  }
 
   /**
+   * Function to set the status of a todo.
    *
-   * @param {ChangeEvent} e
+   * @param {event} e - the status event.
    */
   const statusHandler = (e) => {
     setStatus(e.target.value)
