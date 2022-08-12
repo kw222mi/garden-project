@@ -1,10 +1,7 @@
 
 import {
   collection,
-  addDoc,
-  where,
-  query,
-  getDocs
+  addDoc
 } from 'firebase/firestore'
 import React from 'react'
 import '../style.css'
@@ -50,19 +47,10 @@ const Form = ({ inputText, setInputText, todos, setTodos, setStatus }) => {
   const submitToDoHandler = async (e) => {
     e.preventDefault()
     await addDoc(todolistCollectionRef, { text: inputText, completed: false, userId: uid })
-    // updateTodoList()
     setTodos([...todos, { text: inputText, completed: false, userId: uid }])
     setInputText('')
   }
 
-  /**
-   * Get todolist from database by user id.
-   */
-  const updateTodoList = async () => {
-    const q = query(collection(db, 'todos'), where('userId', '==', uid))
-    const data = await getDocs(q)
-    setTodos(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
-  }
 
   /**
    * Function to set the status of a todo.

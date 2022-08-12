@@ -12,13 +12,12 @@ import {
   doc
 } from 'firebase/firestore'
 
-import DragDrop from './DragDrop'
+import GardenBoard from './GardenBoard'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import Alert from 'react-bootstrap/Alert'
 import { Link } from 'react-router-dom'
 import Accordion from 'react-bootstrap/Accordion'
 import 'react-bootstrap-accordion/dist/index.css'
-import soil from '../pictures/soil_ikon.jpg'
 
 /**
  * Component to represent a garden.
@@ -56,6 +55,16 @@ function Garden () {
    * Get the gardens from the database by user id.
    */
   const getAuthGarden = async () => {
+
+     //Get the current user
+     const currentUser = auth.currentUser
+     if (currentUser) {
+     uid = currentUser.uid;
+     }
+     else {
+     console.log('User is signed out')
+     }
+
     try {
       const q = query(collection(db, 'gardens'), where('userId', '==', uid))
       const data = await getDocs(q)
@@ -118,13 +127,15 @@ function Garden () {
     // get size of garden
     let h
     let w
+
     garden.map((garden) => {
       if (garden.id === id) {
         h = garden.height
         w = garden.width
       }
+      return h
     })
-
+  
     // get a new empty plant array
     const emptyArray = emptyPlantsArray(w, h)
     const gardenDoc = doc(db, 'gardens', id)
@@ -133,18 +144,6 @@ function Garden () {
     getAuthGarden()
   }
 
-  /**
-   * Update the height of the garden.
-   *
-   * @param {string} id - id of the garden.
-   * @param {number} height - the height of the garden.
-   */
-  const updateGarden = async (id, height) => {
-    const gardenDoc = doc(db, 'gardens', id)
-    const newFields = { height: height + 1 }
-    await updateDoc(gardenDoc, newFields)
-    getAuthGarden()
-  }
 
   /**
    * Delete a garden.
@@ -185,7 +184,7 @@ function Garden () {
       setNewWidth(width)
     } else {
       setNewWidth(width)
-      setError('Size should be 30 - 300 cm')
+      setError('Size must be within 30 - 300 cm')
     }
   }
 
@@ -213,29 +212,34 @@ function Garden () {
 
   return (
     <div className="garden">
-     <div>
+
+    <div className='link-container'>
+     <div className='link-button'>
       <Link to="/" className="btn btn-primary w-100 mt-3">
             Menu
           </Link>
       </div>
-    <div>
+    <div className='link-button'>
       <Link to="/todo" className="btn btn-primary w-100 mt-3">
             TodoList
           </Link>
       </div>
+      </div>
+
+      <div className='create-garden-container'>
       <hr className='garden-hr'></hr>
-    <header  className='garden-header'>My Garden</header>
-   <hr className='garden-hr'></hr>
-    {error && <Alert variant="danger">{error}</Alert>}
+      <header  className='garden-header'>My Garden</header>
+      <hr className='garden-hr'></hr>
+      {error && <Alert variant="danger">{error}</Alert>}
       <input
-        className='garden-input'
-        placeholder='Name...'
+        className='garden-input-name'
+        placeholder='Name'
         onChange={(event) => {
           setNewGardenName(event.target.value)
         }}
       />
       <input
-      className='garden-input'
+      className='garden-input-width'
         type="number"
         placeholder='Width in cm'
         onChange={(event) => {
@@ -243,14 +247,13 @@ function Garden () {
         }}
       />
       <input
-      className='garden-input'
+      className='garden-input-height'
         type="number"
         placeholder='Height in cm'
         onChange={(event) => {
           checkHeight(event)
         }}
       />
-
        <label for="gardenType"></label>
       <select className='garden-type' id='gardenType' name='gardenType' onChange={(event) => {
         setNewGardenType(event.target.value)
@@ -261,21 +264,25 @@ function Garden () {
       <option value="medium">Medium</option>
       <option value="heavy">Heavy</option>
       </select>
-
+      <div className='create-button-container'>
       <button className='create-garden-button' onClick={createGarden} disabled={loading}> Create Garden</button>
+      </div>
+      </div>
 
+      <div>
       <hr className='garden-hr-end'></hr>
+      </div>
       {garden.map((garden) => {
         return (
-          <div>
+          <div className='board-container'>
             {' '}
-            <h3 className='garden-info'>{garden.name}</h3>
+            <h3 className='garden-name'>{garden.name}</h3>
             <p className='garden-info'>
             Height: {garden.height} &nbsp;
              Width: {garden.width} &nbsp;
             Type: {garden.type}</p>
 
-              <DragDrop
+              <GardenBoard
                 height={Math.floor(garden.height / 20) * 50}
                 width={Math.floor(garden.width / 20) * 50}
                 type={getGardenType(garden.type)}

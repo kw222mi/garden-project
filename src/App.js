@@ -9,23 +9,20 @@ import Garden from './components/Garden'
 import ForgotPassword from './components/ForgotPassword'
 import ToDoComponent from './components/ToDoComponent'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom' //eslint-disable-line
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './style.css'
 
 const auth = getAuth()
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // User is signed in, see docs for a list of available properties
-    // https://firebase.google.com/docs/reference/js/firebase.User
     const uid = user.uid
     console.log(uid)
-    // ...
   } else {
-    // User is signed out
-    // ...
+    console.log('User is signed out')
   }
 })
+
 /**
  * App component for the garden application.
  *
@@ -36,7 +33,7 @@ function App () {
     <Container
       className="d-flex align-items-center justify-content-center"
       style={{ minHeight: '100vh' }}>
-      <div className="w-100" style={{ maxWidth: '400px' }}>
+      <div className="w-100" style={{ maxWidth: '500px' }}>
           <AuthProvider>
             <Routes>
               <Route exact path="/"

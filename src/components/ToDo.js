@@ -2,7 +2,7 @@
 import React from 'react'
 import '../style.css'
 import {
-  collection,
+  // collection,
   updateDoc,
   deleteDoc,
   doc
@@ -16,7 +16,7 @@ import { db } from '../firebase-config'
  * @returns {HTMLElement} - the component to hold a single todo.
  */
 function ToDo ({ text, todo, todos, setTodos }) {
-  const todolistCollectionRef = collection(db, 'todos')
+  // const todolistCollectionRef = collection(db, 'todos')
 
   
   // Events

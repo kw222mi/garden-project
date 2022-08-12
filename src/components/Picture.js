@@ -27,7 +27,8 @@ function Picture ({ id, url }) {
     <img
       ref={drag}
       src={url}
-      width="150px"
+      alt=''
+      width='150px'
       style={{ border: isDragging ? '5px solid red' : '0px' }}
     />
   )

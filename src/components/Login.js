@@ -15,7 +15,6 @@ import { auth } from '../firebase-config'
 export default function Login () {
   const emailRef = useRef()
   const passwordRef = useRef()
-  // const { login } = useAuth()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
@@ -36,7 +35,6 @@ export default function Login () {
     } catch {
       setError('Failed to log in')
     }
-
     setLoading(false)
   }
 

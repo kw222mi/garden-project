@@ -8,7 +8,7 @@ const ProgressBar = (props) => {
       width: '70%',
       backgroundColor: '#e0e0de',
       borderRadius: 50,
-      margin: 20
+      margin: 10
     }
   
     const fillerStyles = {

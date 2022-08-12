@@ -9,11 +9,11 @@ import {
   getDocs
 } from 'firebase/firestore'
 import { db } from '../firebase-config'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 
 /**
- *Component to hold the todolist and the form to add todos.
+ * Component to hold the todolist and the form to add todos.
  *
  * @returns {HTMLElement} - render the todo and form components.
  */
@@ -23,16 +23,17 @@ function ToDoComponent () {
   const [todos, setTodos] = useState([])
   const [status, setStatus] = useState('all')
   const [filteredTodos, setFilteredTodos] = useState([])
-  // const [uid, setUid] = useState(null)
-  const todolistCollectionRef = collection(db, 'todos')
+
+  //const todolistCollectionRef = collection(db, 'todos')
 
   const auth = getAuth()
   let uid
+
+  // Set new current user if the user changes or log out.
   onAuthStateChanged(auth, (user) => {
     if (user) {
     // User is signed in
       uid = user.uid
-      // console.log(uid)
     } else {
       console.log('User is signed out')
     }
@@ -41,9 +42,20 @@ function ToDoComponent () {
   // use effect
 
   useEffect(() => {
+    
     /**
      *Get the list of todos.
      */
+
+     //Get the current user
+    const currentUser = auth.currentUser
+    if (currentUser) {
+    uid = currentUser.uid;
+    }
+    else {
+    console.log('User is signed out')
+    }
+
     const getTodos = async () => {
       try {
         const q = query(collection(db, 'todos'), where('userId', '==', uid))
@@ -54,6 +66,7 @@ function ToDoComponent () {
       }
     }
     getTodos()
+    
   }, [])
 
   useEffect(() => {

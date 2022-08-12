@@ -1,23 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import Picture from './Picture'
-import { useDrop } from 'react-dnd'
 import '../style.css'
-import peas from '../pictures/peas_ikon.jpg'
-import onion from '../pictures/onion_ikon.jpg'
-import carrot from '../pictures/carrot_ikon.jpg'
-import cabbage from '../pictures/cabbage_ikon.jpg'
-import beet from '../pictures/beat_ikon.jpg'
-import lettuce from '../pictures/lettuce_ikon.jpg'
-import pumpkin from '../pictures/pumpkin_ikon.jpg'
-import dill from '../pictures/dill_ikon.jpg'
-import bean from '../pictures/bean_ikon.jpg'
-import radish from '../pictures/radish_ikon.jpg'
-import squash from '../pictures/squash_ikon.jpg'
-import parsley from '../pictures/parsley_ikon.jpg'
-import potato from '../pictures/potato_ikon.jpg'
-import tomato from '../pictures/tomato_ikon.jpg'
-import cucumber from '../pictures/cucumber_ikon.jpg'
-
 import { db } from '../firebase-config'
 import {
   collection,
@@ -31,82 +13,6 @@ import GardenSquare from './GardenSquare'
 import PlantCard from './PlantCard'
 import Progressbar from './Progressbar'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-
-const PictureList = [
-  {
-    id: 1,
-    url: peas
-  },
-  {
-    id: 2,
-    url: onion
-  },
-  {
-    id: 3,
-    url: cabbage
-
-  },
-  {
-    id: 4,
-    url: carrot
-
-  },
-  {
-    id: 5,
-    url: beet
-
-  },
-  {
-    id: 6,
-    url: lettuce
-
-  },
-  {
-    id: 7,
-    url: pumpkin
-
-  },
-  {
-    id: 8,
-    url: dill
-
-  },
-  {
-    id: 9,
-    url: bean
-
-  },
-  {
-    id: 10,
-    url: radish
-
-  },
-  {
-    id: 11,
-    url: squash
-
-  },
-  {
-    id: 12,
-    url: parsley
-
-  },
-  {
-    id: 13,
-    url: potato
-
-  },
-  {
-    id: 14,
-    url: tomato
-
-  },
-  {
-    id: 15,
-    url: cucumber
-
-  }
-]
 
 /**
  * Component for the board of the garden, holding plants.
@@ -135,12 +41,10 @@ function DragDrop (props) {
     }
   })
 
-  /*
-  useEffect(() => {
 
-    console.log(selectedPlant)
-  }, [selectedPlant])
-*/
+useEffect(() => {
+  setPlantsInGarden(props.plantsInGarden)
+}, [props.plantsInGarden])
 
   useEffect(() => {
     setProgressbar()
@@ -171,19 +75,10 @@ function DragDrop (props) {
       const data = await getDocs(q)
       // let test = data.getValue(plantsInGarden)
       console.log('data.docs ' + data.docs.data)
-      // const data = await getDocs(gardensCollectionRef);
-      // setPlantsInGarden(data.docs.map((doc) => ({ ...doc.data(), plantsInGarden: plantsInGarden })));
     }
     getPlantsInGarden()
-    // let numberOfSquares = (props.height/50)*(props.width/50)
-
     console.log('get array' + plantsInGarden)
-  /*
-  for (let i=0; i< numberOfSquares; i++){
-    setPlantsIngarden(gardenSquare => [...gardenSquare, {name: tomato, id: gardenId}])
-    console.log("array" + gardenSquare.name)
-  }
-  */
+ 
   }, [])
 
   /**
@@ -197,33 +92,6 @@ function DragDrop (props) {
     const newField = { plantsInGarden }
     await updateDoc(gardenDoc, newField)
   }
-
-  /*
-  const [{ isOver }, drop] = useDrop(() => ({
-    accept: 'image',
-    drop: (item) => addImageToBoard(item.id),
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver()
-    })
-  }))
-  */
-
-  /*
-  const addImageToBoard = (id) => {
-    const pictureList = PictureList.filter((picture) => id === picture.id)
-    setBoard((board) => [...board, pictureList[0]])
-  }
-  */
-
-  /*
-  const addImageToBoardNew = (id) => {
-    console.log(plantList)
-    const pList = plantList.filter((plant) => id === plant.id)
-    setBoard((board) => [...board, pList[0]])
-    console.log(board)
-
-  }
-  */
 
   /**
    * Sort the plants in the list.
@@ -269,7 +137,7 @@ function DragDrop (props) {
    *
    * @param {number} index -the number of the square on the board.
    */
-  const handleClick = (index) => {
+  const gardenSquareClick = (index) => {
     let plantName
     let plantUrl
     let minTime
@@ -393,7 +261,7 @@ function DragDrop (props) {
     <div className= 'drag-drop-container'>
       <div className = 'plant-select-container'>
         <label for='plantsInGarden'></label>
-        <select id="plantType" name='plantType' onChange={(event) => {
+        <select id='plantType' name='plantType' onChange={(event) => {
           showPlantFacts(event)
         }}>
       <option value='nothing selected' selected='false'>Choose plants to grow:</option>
@@ -401,7 +269,6 @@ function DragDrop (props) {
         return <option name={plant.name} value={plant.name} >{plant.name}</option>
       })}
       </select>
-
       </div>
       <div className='sort-plants-container'>
         <label for='sortPlants'></label>
@@ -414,11 +281,8 @@ function DragDrop (props) {
         <option value='small'>Show only small</option>
         <option value='medium'>Show only medium</option>
         <option value='heavy'>Show only heavy</option>
-
         </select>
-
       </div>
-
      
       {selectedPlant.map((plant) => {
         return <PlantCard
@@ -441,15 +305,11 @@ function DragDrop (props) {
         border: `5px solid ${props.type}`
       }}
       >
-
         {plantsInGarden.map((item, index) => {
-          return <GardenSquare key={item.id} name={item.name} url={item.url} onClick={() => handleClick(index)}/>
-        })
-
-        }
-
+          return <GardenSquare key={item.id} name={item.name} url={item.url} onClick={() => gardenSquareClick(index)}/>
+        })}
       </div>
-      <div className="App">
+      <div className="progressbar-container">
         {progressData.map((item, idx) => (
           <Progressbar key={idx} bgcolor={item.bgcolor} completed={item.completed} name={item.name}/>
         ))}
@@ -457,24 +317,5 @@ function DragDrop (props) {
     </div>
   )
 }
-// Code for drag and drop
-/*
-{board.map((picture) => {
-          return <Picture url={picture.url} id={picture.id} />
-        })}
 
-         <div className="Pictures">
-        {PictureList.map((picture) => {
-          return <Picture url={picture.url} id={picture.id} />
-
-        })}
-
-      </div>
-      <div className="test">
-        {plantList.map((plant) => {
-          return <Picture url={plant.url} id={plant.id} />
-
-        })}
-        </div>
-*/
 export default DragDrop
