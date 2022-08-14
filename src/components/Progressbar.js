@@ -1,46 +1,51 @@
 import React from 'react'
 
+/**
+ * Component to represent i progressbar.
+ *
+ * @param {*} props -incomming props
+ * @returns {HTMLElement} - The progressbar
+ */
 const ProgressBar = (props) => {
-    const { bgcolor, completed, name } = props;
-  
-    const containerStyles = {
-      height: 20,
-      width: '70%',
-      backgroundColor: '#e0e0de',
-      borderRadius: 50,
-      margin: 10
-    }
-  
-    const fillerStyles = {
-      height: '100%',
-      width: `${completed}%`,
-      backgroundColor: bgcolor,
-      borderRadius: 'inherit',
-      textAlign: 'right'
-    }
-  
-    const labelStyles = {
-      padding: 5,
-      color: 'white',
-      fontWeight: 'bold'
-    }
+  const { bgcolor, completed, name } = props
 
-    const nameStyles = {
-      color: '#D1E8E2',
-      marginLeft: 5
-    }
-  
-    return (
-      <div>
+  const containerStyles = {
+    height: 20,
+    width: '70%',
+    backgroundColor: '#e0e0de',
+    borderRadius: 50,
+    margin: 10
+  }
+
+  const fillerStyles = {
+    height: '100%',
+    width: `${completed}%`,
+    backgroundColor: bgcolor,
+    borderRadius: 'inherit',
+    textAlign: 'right'
+  }
+
+  const labelStyles = {
+    padding: 5,
+    color: 'white',
+    fontWeight: 'bold'
+  }
+
+  const nameStyles = {
+    color: '#D1E8E2',
+    marginLeft: 5
+  }
+
+  return (
+    <div>
       <p style={nameStyles}>{name}</p>
       <div style={containerStyles}>
         <div style={fillerStyles}>
           <span style={labelStyles}>{`${completed}%`}</span>
         </div>
       </div>
-      </div>
-    );
-  };
-  
-  export default ProgressBar;
-  
+    </div>
+  )
+}
+
+export default ProgressBar

@@ -273,12 +273,24 @@
     border-radius: 5px;
     border: none;
     font-family: "Poppins", sans-serif;
+    width: 200px;
    }
 
    .garden-input-width {
     float: right;
     margin-right: 30px;
    }
+
+   
+   .garden-input-name {
+    float: left;
+   
+   }
+   
+   .garden-input-height {
+    float: left;
+   }
+   
    /*garden droplist*/
    .garden-type {
       margin: 5px;

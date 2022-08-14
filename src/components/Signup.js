@@ -73,7 +73,6 @@ export default function Signup () {
               Sign Up
             </Button>
             </div>
-            
           </Form>
         </Card.Body>
       </Card>

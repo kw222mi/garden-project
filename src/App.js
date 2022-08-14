@@ -9,7 +9,7 @@ import Garden from './components/Garden'
 import ForgotPassword from './components/ForgotPassword'
 import ToDoComponent from './components/ToDoComponent'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom' //eslint-disable-line
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom' // eslint-disable-line
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './style.css'
 

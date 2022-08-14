@@ -16,11 +16,6 @@ import { db } from '../firebase-config'
  * @returns {HTMLElement} - the component to hold a single todo.
  */
 function ToDo ({ text, todo, todos, setTodos }) {
-  // const todolistCollectionRef = collection(db, 'todos')
-
-  
-  // Events
-
   /**
    * Function to delete a todo.
    *

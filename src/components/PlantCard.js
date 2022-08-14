@@ -16,7 +16,7 @@ export default function PlantCard (props) {
                 <p className='plant-card-p' data-testid= 'type'>Type: {props.type}</p>
                 <p className='plant-card-p' data-testid= 'friends'>Friends: {props.friends}</p>
                 <p className='plant-card-p' data-testid= 'avoid'>Avoid: {props.avoid}</p>
-                <p className='plant-card-p' data-testid='harvest'>Time to harvest: {props.minTime} - {props.maxTime} days</p>
+                <p className='plant-card-p' data-testid= 'harvest'>Time to harvest: {props.minTime} - {props.maxTime} days</p>
             </div>
          </div>
 

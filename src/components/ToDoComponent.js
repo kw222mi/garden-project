@@ -24,7 +24,7 @@ function ToDoComponent () {
   const [status, setStatus] = useState('all')
   const [filteredTodos, setFilteredTodos] = useState([])
 
-  //const todolistCollectionRef = collection(db, 'todos')
+  // const todolistCollectionRef = collection(db, 'todos')
 
   const auth = getAuth()
   let uid
@@ -40,22 +40,21 @@ function ToDoComponent () {
   })
 
   // use effect
-
+  /**
+   * Get the list of todos.
+   */
   useEffect(() => {
-    
-    /**
-     *Get the list of todos.
-     */
-
-     //Get the current user
+    // Get the current user
     const currentUser = auth.currentUser
     if (currentUser) {
-    uid = currentUser.uid;
-    }
-    else {
-    console.log('User is signed out')
+      uid = currentUser.uid
+    } else {
+      console.log('User is signed out')
     }
 
+    /**
+     * Get the todos from database.
+     */
     const getTodos = async () => {
       try {
         const q = query(collection(db, 'todos'), where('userId', '==', uid))
@@ -66,7 +65,6 @@ function ToDoComponent () {
       }
     }
     getTodos()
-    
   }, [])
 
   useEffect(() => {

@@ -51,7 +51,6 @@ const Form = ({ inputText, setInputText, todos, setTodos, setStatus }) => {
     setInputText('')
   }
 
-
   /**
    * Function to set the status of a todo.
    *

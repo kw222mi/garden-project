@@ -18,7 +18,6 @@ import Alert from 'react-bootstrap/Alert'
 import { Link } from 'react-router-dom'
 import Accordion from 'react-bootstrap/Accordion'
 import 'react-bootstrap-accordion/dist/index.css'
-
 /**
  * Component to represent a garden.
  *
@@ -39,7 +38,7 @@ function Garden () {
   let uid
   onAuthStateChanged(auth, (user) => {
     if (user) {
-    // User is signed in
+      // User is signed in
       uid = user.uid
       console.log(uid)
     } else {
@@ -55,15 +54,13 @@ function Garden () {
    * Get the gardens from the database by user id.
    */
   const getAuthGarden = async () => {
-
-     //Get the current user
-     const currentUser = auth.currentUser
-     if (currentUser) {
-     uid = currentUser.uid;
-     }
-     else {
-     console.log('User is signed out')
-     }
+    // Get the current user
+    const currentUser = auth.currentUser
+    if (currentUser) {
+      uid = currentUser.uid
+    } else {
+      console.log('User is signed out')
+    }
 
     try {
       const q = query(collection(db, 'gardens'), where('userId', '==', uid))
@@ -135,7 +132,6 @@ function Garden () {
       }
       return h
     })
-  
     // get a new empty plant array
     const emptyArray = emptyPlantsArray(w, h)
     const gardenDoc = doc(db, 'gardens', id)
@@ -143,7 +139,6 @@ function Garden () {
     await updateDoc(gardenDoc, newFields)
     getAuthGarden()
   }
-
 
   /**
    * Delete a garden.
@@ -213,64 +208,64 @@ function Garden () {
   return (
     <div className="garden">
 
-    <div className='link-container'>
-     <div className='link-button'>
-      <Link to="/" className="btn btn-primary w-100 mt-3">
+      <div className='link-container'>
+        <div className='link-button'>
+          <Link to="/" className="btn btn-primary w-100 mt-3">
             Menu
           </Link>
-      </div>
-    <div className='link-button'>
-      <Link to="/todo" className="btn btn-primary w-100 mt-3">
+        </div>
+        <div className='link-button'>
+          <Link to="/todo" className="btn btn-primary w-100 mt-3">
             TodoList
           </Link>
-      </div>
+        </div>
       </div>
 
       <div className='create-garden-container'>
-      <hr className='garden-hr'></hr>
-      <header  className='garden-header'>My Garden</header>
-      <hr className='garden-hr'></hr>
-      {error && <Alert variant="danger">{error}</Alert>}
-      <input
-        className='garden-input-name'
-        placeholder='Name'
-        onChange={(event) => {
-          setNewGardenName(event.target.value)
-        }}
-      />
-      <input
-      className='garden-input-width'
-        type="number"
-        placeholder='Width in cm'
-        onChange={(event) => {
-          checkWidth(event)
-        }}
-      />
-      <input
-      className='garden-input-height'
-        type="number"
-        placeholder='Height in cm'
-        onChange={(event) => {
-          checkHeight(event)
-        }}
-      />
-       <label for="gardenType"></label>
-      <select className='garden-type' id='gardenType' name='gardenType' onChange={(event) => {
-        setNewGardenType(event.target.value)
-      }}>
-      <option value="nothing" selected="selected">Choose type of plants:</option>
-      <option value="giving">Giving</option>
-      <option value="small">Small</option>
-      <option value="medium">Medium</option>
-      <option value="heavy">Heavy</option>
-      </select>
-      <div className='create-button-container'>
-      <button className='create-garden-button' onClick={createGarden} disabled={loading}> Create Garden</button>
-      </div>
+        <hr className='garden-hr'></hr>
+        <header className='garden-header'>My Garden</header>
+        <hr className='garden-hr'></hr>
+        {error && <Alert variant="danger">{error}</Alert>}
+        <input
+          className='garden-input-name'
+          placeholder='Name'
+          onChange={(event) => {
+            setNewGardenName(event.target.value)
+          }}
+        />
+        <input
+          className='garden-input-width'
+          type="number"
+          placeholder='Width in cm'
+          onChange={(event) => {
+            checkWidth(event)
+          }}
+        />
+        <input
+          className='garden-input-height'
+          type="number"
+          placeholder='Height in cm'
+          onChange={(event) => {
+            checkHeight(event)
+          }}
+        />
+        <label for="gardenType"></label>
+        <select className='garden-type' id='gardenType' name='gardenType' onChange={(event) => {
+          setNewGardenType(event.target.value)
+        }}>
+          <option value="nothing" selected="selected">Choose type of plants:</option>
+          <option value="giving">Giving</option>
+          <option value="small">Small</option>
+          <option value="medium">Medium</option>
+          <option value="heavy">Heavy</option>
+        </select>
+        <div className='create-button-container'>
+          <button className='create-garden-button' onClick={createGarden} disabled={loading}> Create Garden</button>
+        </div>
       </div>
 
       <div>
-      <hr className='garden-hr-end'></hr>
+        <hr className='garden-hr-end'></hr>
       </div>
       {garden.map((garden) => {
         return (
@@ -278,44 +273,44 @@ function Garden () {
             {' '}
             <h3 className='garden-name'>{garden.name}</h3>
             <p className='garden-info'>
-            Height: {garden.height} &nbsp;
-             Width: {garden.width} &nbsp;
-            Type: {garden.type}</p>
+              Height: {garden.height} &nbsp;
+              Width: {garden.width} &nbsp;
+              Type: {garden.type}</p>
 
-              <GardenBoard
-                height={Math.floor(garden.height / 20) * 50}
-                width={Math.floor(garden.width / 20) * 50}
-                type={getGardenType(garden.type)}
-                gardenId={garden.id}
-                plantsInGarden={garden.plantsInGarden}
-              />
+            <GardenBoard
+              height={Math.floor(garden.height / 20) * 50}
+              width={Math.floor(garden.width / 20) * 50}
+              type={getGardenType(garden.type)}
+              gardenId={garden.id}
+              plantsInGarden={garden.plantsInGarden}
+            />
 
-<Accordion >
-      <Accordion.Item eventKey="0">
-        <Accordion.Header className='accordion-haeder'>
-        New garden type
-        </Accordion.Header>
-        <Accordion.Body>
-       By selecting a new type of garden you will change the type and
-       clear the plants. 
-       <br></br>
-        <label for="gardenType"></label>
-      <select id="gardenType" name="gardenType" onChange={(event) => {
-        setNewType(event.target.value)
-      }}>
-      <option value="nothing" selected="selected">Select new garden type:</option>
-      <option value="giving">Giving</option>
-      <option value="small">Small</option>
-      <option value="medium">Medium</option>
-      <option value="heavy">Heavy</option>
-      </select>
-      <button className='new-type-button'onClick={(event) => { newTypeOfGarden(garden.id) }}>Set new plants</button>
-        </Accordion.Body>
-      </Accordion.Item>
-    </Accordion>
-        
-            <button 
-            className='delete-garden-button'
+            <Accordion >
+              <Accordion.Item eventKey="0">
+                <Accordion.Header className='accordion-haeder'>
+                  New garden type
+                </Accordion.Header>
+                <Accordion.Body>
+                  By selecting a new type of garden you will change the type and
+                  clear the plants.
+                  <br></br>
+                  <label for="gardenType"></label>
+                  <select id="gardenType" name="gardenType" onChange={(event) => {
+                    setNewType(event.target.value)
+                  }}>
+                    <option value="nothing" selected="selected">Select new garden type:</option>
+                    <option value="giving">Giving</option>
+                    <option value="small">Small</option>
+                    <option value="medium">Medium</option>
+                    <option value="heavy">Heavy</option>
+                  </select>
+                  <button className='new-type-button' onClick={(event) => { newTypeOfGarden(garden.id) }}>Set new plants</button>
+                </Accordion.Body>
+              </Accordion.Item>
+            </Accordion>
+
+            <button
+              className='delete-garden-button'
               onClick={() => {
                 deleteGarden(garden.id)
               }}
@@ -327,7 +322,7 @@ function Garden () {
           </div>
         )
       })}
-     
+
     </div>
   )
 }
