@@ -11,7 +11,7 @@ import {
   deleteDoc,
   doc
 } from 'firebase/firestore'
-
+import './garden.css'
 import GardenBoard from './GardenBoard'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import Alert from 'react-bootstrap/Alert'

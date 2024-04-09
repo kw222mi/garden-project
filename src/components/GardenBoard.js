@@ -9,6 +9,7 @@ import {
   query,
   doc
 } from 'firebase/firestore'
+import './gardenBoard.css'
 import GardenSquare from './GardenSquare'
 import PlantCard from './PlantCard'
 import Progressbar from './Progressbar'

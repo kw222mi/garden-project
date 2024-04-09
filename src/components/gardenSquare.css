@@ -1,0 +1,22 @@
+/*garden square*/
+
+.square {
+    background: rgb(250, 249, 249);
+    width: 48px;
+    height: 48px;
+    border: #646969;
+    border-width: 1px;
+    border-style: solid;
+    display: inline-block;
+    margin-top: 0px;
+    margin-bottom: -1px;
+    margin-left: -1px;
+    color: black; 
+  }
+  
+  .garden-square-img{
+    height: 40px;
+    width : 40px;
+  }
+  
+ 
