@@ -15,9 +15,10 @@ import './garden.css'
 import GardenBoard from './GardenBoard'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import Alert from 'react-bootstrap/Alert'
-import { Link } from 'react-router-dom'
+import Navbar from './Navbar'
 import Accordion from 'react-bootstrap/Accordion'
 import 'react-bootstrap-accordion/dist/index.css'
+
 /**
  * Component to represent a garden.
  *
@@ -205,26 +206,16 @@ function Garden () {
     return typeColor
   }
 
+ 
+
   return (
     <div className="garden">
 
-      <div className='link-container'>
-        <div className='link-button'>
-          <Link to="/" className="btn btn-primary w-100 mt-3">
-            Menu
-          </Link>
-        </div>
-        <div className='link-button'>
-          <Link to="/todo" className="btn btn-primary w-100 mt-3">
-            TodoList
-          </Link>
-        </div>
-      </div>
+    <Navbar/>
 
-      <div className='create-garden-container'>
-        <hr className='garden-hr'></hr>
         <header className='garden-header'>My Garden</header>
-        <hr className='garden-hr'></hr>
+
+        <div className='create-garden-container'>
         {error && <Alert variant="danger">{error}</Alert>}
         <input
           className='garden-input-name'
@@ -264,9 +255,29 @@ function Garden () {
         </div>
       </div>
 
-      <div>
-        <hr className='garden-hr-end'></hr>
-      </div>
+        <h1 className='gardens-h1'>
+        <span class="material-symbols-outlined leaf">
+          nest_eco_leaf
+        </span>
+        
+        Gardens
+        <span class="material-symbols-outlined leaf">
+        emoji_nature
+        </span>
+
+        <span class="material-symbols-outlined">
+        psychiatry
+        </span>
+        <span class="material-symbols-outlined">
+        deceased
+        </span>
+        <span class="material-symbols-outlined">
+        local_florist
+        </span>
+        <span className="material-symbols-outlined leaf">
+          eco
+        </span>
+        </h1>
       {garden.map((garden) => {
         return (
           <div className='board-container'>
@@ -318,11 +329,15 @@ function Garden () {
               {' '}
               Delete Garden
             </button>
-            <hr className='garden-hr-end'></hr>
+          
+            
           </div>
         )
       })}
 
+      <footer>
+
+      </footer>
     </div>
   )
 }

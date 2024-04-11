@@ -9,12 +9,19 @@ import React from 'react'
 const ProgressBar = (props) => {
   const { bgcolor, completed, name } = props
 
+  const progressContainerStyles = {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'baseline',
+    marginBottom: 5
+
+  }
   const containerStyles = {
-    height: 20,
-    width: '70%',
+    height: 10,
+    width: '50%',
     backgroundColor: '#e0e0de',
-    borderRadius: 50,
-    margin: 10
+    borderRadius: 5,
+    marginLeft: 10
   }
 
   const fillerStyles = {
@@ -26,24 +33,26 @@ const ProgressBar = (props) => {
   }
 
   const labelStyles = {
-    padding: 5,
-    color: 'white',
-    fontWeight: 'bold'
+    paddingLeft: 5,
+    color: '#D1E8E2',
+    fontFamily:"Alice",
+   
   }
 
   const nameStyles = {
     color: '#D1E8E2',
-    marginLeft: 5
+    width:'20%',
+    fontFamily:"Alice",
   }
 
   return (
-    <div>
-      <p style={nameStyles}>{name}</p>
+    <div style={progressContainerStyles}>
+      <span style={nameStyles}>{name}</span>
       <div style={containerStyles}>
         <div style={fillerStyles}>
-          <span style={labelStyles}>{`${completed}%`}</span>
         </div>
       </div>
+      <span style={labelStyles}>{`${completed}%`}</span>
     </div>
   )
 }
