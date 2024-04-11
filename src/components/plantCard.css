@@ -1,0 +1,32 @@
+/*PlantCard*/
+
+.plant-card {
+max-width: 50%;
+ 
+}
+.plant-card-img {
+  margin-left: 5px;
+}
+
+.plant-card-ikon {
+  color: var(--lightGreen);
+}
+.plant-card-h4 {
+  color:var(--lightGreen);
+  font-family: var(--textFont);
+}
+
+.plant-card-plantname {
+  color:#DA7B93;
+  
+}
+.plant-card-img {
+    width: 70px;
+    height: 70px;
+}
+.plant-card-p {
+  color:#DA7B93;
+  margin: 2px;
+  font-family: var(--textFont);
+ 
+}

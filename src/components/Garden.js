@@ -255,29 +255,13 @@ function Garden () {
         </div>
       </div>
 
-        <h1 className='gardens-h1'>
-        <span class="material-symbols-outlined leaf">
-          nest_eco_leaf
-        </span>
-        
+        <h1 className='gardens-h1'>        
         Gardens
         <span class="material-symbols-outlined leaf">
         emoji_nature
-        </span>
-
-        <span class="material-symbols-outlined">
-        psychiatry
-        </span>
-        <span class="material-symbols-outlined">
-        deceased
-        </span>
-        <span class="material-symbols-outlined">
-        local_florist
-        </span>
-        <span className="material-symbols-outlined leaf">
-          eco
-        </span>
+        </span>        
         </h1>
+        
       {garden.map((garden) => {
         return (
           <div className='board-container'>

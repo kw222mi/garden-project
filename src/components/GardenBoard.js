@@ -355,7 +355,8 @@ function GardenBoard (props) {
   }
 
   return (
-    <div className='drag-drop-container'>
+    <div className='garden-board-container'>
+    <div className='select-container'>
       <div className='plant-select-container'>
         <label for='plantsInGarden'></label>
         <select id='plantType' name='plantType' onChange={(event) => {
@@ -392,7 +393,9 @@ function GardenBoard (props) {
           type={plant.type}
         />
       })}
+      </div>
 
+      <div className='board-container'>
       <div
         className="board"
         // ref={drop}
@@ -410,6 +413,7 @@ function GardenBoard (props) {
         {progressData.map((item, idx) => (
           <Progressbar key={idx} bgcolor={item.bgcolor} completed={item.completed} name={item.name} />
         ))}
+      </div>
       </div>
     </div>
   )
