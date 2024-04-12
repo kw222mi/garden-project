@@ -7,6 +7,7 @@ import React from 'react'
 import '../style.css'
 import { db } from '../firebase-config'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import './form.css'
 
 /**
  * Component to handle input from the user.

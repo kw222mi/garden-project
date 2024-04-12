@@ -13,7 +13,7 @@
     background-color: var(--mediumBlue);
   }
 
-  li {
+  #nav-li{
     list-style: none;
     font-size: 30px;
     cursor: pointer;

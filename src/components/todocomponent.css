@@ -1,0 +1,15 @@
+
+.todo-header{
+    font-family: var(--headerFont);
+    font-size: 4rem;
+}
+
+.todolist-container{
+    background-image: linear-gradient(120deg, #2C3531 0%, #2C3531 100%);
+    color: white;
+    font-family: var(--textFont);
+    min-height: 100vh;
+    width: 800px;
+    margin: auto;
+     
+  }

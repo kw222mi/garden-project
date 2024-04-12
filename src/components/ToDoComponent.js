@@ -11,6 +11,7 @@ import {
 import { db } from '../firebase-config'
 import { Link } from 'react-router-dom'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import './todocomponent.css'
 
 /**
  * Component to hold the todolist and the form to add todos.
@@ -101,7 +102,7 @@ function ToDoComponent () {
             My garden
           </Link>
       </div>
-      <header>
+      <header className='todo-header'>
         Todo list
       </header>
       <Form todos={todos} setTodos={setTodos} inputText={inputText} setInputText={setInputText}

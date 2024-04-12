@@ -8,6 +8,7 @@ import {
   doc
 } from 'firebase/firestore'
 import { db } from '../firebase-config'
+import './todo.css'
 
 /**
  * Component to hold a single to do element.

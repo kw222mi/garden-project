@@ -2,9 +2,7 @@
  .garden-board-container{
   display: flex;
   flex-direction: row-reverse;
-  
   gap:2rem;
-  
     
   }
 
@@ -38,19 +36,13 @@
   }
 
   .board {
-  
+   
   }
-
 
   /* Progressbar container*/
   .progressbar-container{
 
   }
- 
-  
-
-
-
   
 
   /**Test*/
@@ -68,18 +60,6 @@
   }
 
 
-
-
-     /*garden droplist*/
-     .garden-type {
-        margin-right: 30px;
-        position: relative;
-        overflow: hidden;
-        appearance: menulist;
-        border-radius: 5px;
-        cursor: pointer;
-        background-color: var(--lightGreen);
-     }
 
   
   

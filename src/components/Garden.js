@@ -289,6 +289,7 @@ function Garden () {
                   By selecting a new type of garden you will change the type and
                   clear the plants.
                   <br></br>
+                  <div className='new-type-select'>
                   <label for="gardenType"></label>
                   <select id="gardenType" name="gardenType" onChange={(event) => {
                     setNewType(event.target.value)
@@ -299,6 +300,7 @@ function Garden () {
                     <option value="medium">Medium</option>
                     <option value="heavy">Heavy</option>
                   </select>
+                  </div>
                   <button className='new-type-button' onClick={(event) => { newTypeOfGarden(garden.id) }}>Set new plants</button>
                 </Accordion.Body>
               </Accordion.Item>

@@ -43,7 +43,7 @@ export default function Navbar () {
           <div className={`navbar-links ${isMenuOpen ? "active" : ""}`}>
             <ul>
               {routes.map((route) => (
-                <li key={route.id} className={isActive(route.path) ? "active" : ""} onClick={() => handleClick(route.path)}>
+                <li key={route.id} className={isActive(route.path) ? "active" : ""} id="nav-li" onClick={() => handleClick(route.path)}>
                   {route.name}
                 </li>
               ))}

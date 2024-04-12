@@ -396,9 +396,8 @@ function GardenBoard (props) {
       </div>
 
       <div className='board-container'>
-      <div
-        className="board"
-        // ref={drop}
+
+      <div className="board"
         style={{
           width: `${props.width}px`,
           height: `${props.height}px`,
@@ -409,6 +408,7 @@ function GardenBoard (props) {
           return <GardenSquare key={item.id} name={item.name} url={item.url} onClick={() => gardenSquareClick(index)} />
         })}
       </div>
+
       <div className="progressbar-container">
         {progressData.map((item, idx) => (
           <Progressbar key={idx} bgcolor={item.bgcolor} completed={item.completed} name={item.name} />
