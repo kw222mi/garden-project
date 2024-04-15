@@ -13,9 +13,17 @@
     background-color: var(--mediumBlue);
     font-family: var(--headerFont);
     font-size: 4rem;
-    color:#D1E8E2;
+    color: var(--lightGreen);
     margin-bottom: 1rem;
-    width: 100%;   
+    width: 100%;    
+  }
+
+  .header-ikon {
+    color:var(--lightGreen);
+    font-size: 5rem;
+    margin-right: 10px;
+    margin-bottom: 50px;
+    
   }
 
 /*Create garden*/
@@ -79,6 +87,7 @@
     border-radius: 5px;
     padding: 3px 7px;
     font-family: var(--textFont);
+    max-width: 30%;
   }
   
   .new-type-button:hover,
@@ -130,6 +139,10 @@ align-items: center;
 
 /*accordion */
 
+.accordion-new-type{
+  max-width: 80%; 
+}
+
 .new-type-button {
    float: right;
 }
@@ -138,7 +151,6 @@ align-items: center;
   color: #D1E8E2 !important;
   font-family: var(--textFont) !important;
   border-color: #646969 !important;
- 
 }
 
 .accordion-body {

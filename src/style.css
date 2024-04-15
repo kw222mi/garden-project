@@ -30,8 +30,13 @@
     color: white;
     font-family: var(--textFont);
     min-height: 100vh;
-    width: 800px;
     margin: auto;
+  }
+
+  .app-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   
   header,
@@ -64,6 +69,7 @@
     background: #DA7B93;
     color: white;
   }
+  
 
   /*Bootstrap buttons*/
   .btn-primary {

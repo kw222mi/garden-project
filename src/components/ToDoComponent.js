@@ -12,6 +12,7 @@ import { db } from '../firebase-config'
 import { Link } from 'react-router-dom'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import './todocomponent.css'
+import Navbar from './Navbar'
 
 /**
  * Component to hold the todolist and the form to add todos.
@@ -92,16 +93,10 @@ function ToDoComponent () {
   }
 
   return (
-    <div className="todolist-container"> <div>
-    <Link to="/" className="btn btn-primary w-100 mt-3">
-          Menu
-        </Link>
-    </div>
-      <div>
-      <Link to="/garden" className="btn btn-primary w-100 mt-3">
-            My garden
-          </Link>
-      </div>
+    <div className="todolist-container"> 
+       <Navbar/>
+    
+    
       <header className='todo-header'>
         Todo list
       </header>

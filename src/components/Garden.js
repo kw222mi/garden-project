@@ -213,7 +213,11 @@ function Garden () {
 
     <Navbar/>
 
-        <header className='garden-header'>My Garden</header>
+        <header className='garden-header'>
+        <span class="material-symbols-outlined header-ikon">
+        emoji_nature
+        </span>
+        My Garden</header>
 
         <div className='create-garden-container'>
         {error && <Alert variant="danger">{error}</Alert>}
@@ -280,7 +284,7 @@ function Garden () {
               plantsInGarden={garden.plantsInGarden}
             />
 
-            <Accordion >
+            <Accordion className='accordion-new-type'>
               <Accordion.Item eventKey="0">
                 <Accordion.Header className='accordion-haeder'>
                   New garden type

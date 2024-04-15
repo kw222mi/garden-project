@@ -15,6 +15,11 @@ export default function Navbar () {
           name: "Todo",
           path: "/todo",
         },
+        {
+          id: 3,
+          name: "My Garden",
+          path: "/garden",
+        },
         
       
       ];
